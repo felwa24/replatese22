@@ -1,0 +1,1990 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RePlate — UI/UX Wireframe Document</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;1,9..144,400&family=DM+Sans:wght@300;400;500;600&display=swap');
+
+:root {
+  --ink: #1A1814;
+  --muted: #6B6560;
+  --line: #D8D3CC;
+  --bg: #F5F2EC;
+  --white: #FDFCFA;
+  --green: #2A6348;
+  --green-lt: #E4F0EB;
+  --orange: #C4672F;
+  --orange-lt: #FCEEE4;
+  --red: #B83025;
+  --red-lt: #FBEAE8;
+  --yellow-lt: #FEF6E4;
+  --blue: #2563EB;
+  --blue-lt: #EFF6FF;
+  --screen-bg: #FAFAF8;
+  --screen-border: #C8C3BC;
+  --anno: #C4672F;
+  --grid: rgba(196,103,47,0.07);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 13px; }
+body { background: var(--bg); color: var(--ink); font-family: 'DM Sans', sans-serif; line-height: 1.5; }
+
+/* ── COVER ── */
+.cover {
+  min-height: 100vh;
+  background: var(--ink);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 60px 80px;
+  position: relative;
+  overflow: hidden;
+}
+.cover::before {
+  content: '';
+  position: absolute;
+  width: 600px; height: 600px;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,0.05);
+  top: -200px; right: -100px;
+}
+.cover::after {
+  content: '';
+  position: absolute;
+  width: 400px; height: 400px;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,0.05);
+  bottom: -150px; left: 200px;
+}
+.cover-top { display: flex; align-items: center; justify-content: space-between; }
+.cover-logo { display: flex; align-items: center; gap: 14px; }
+.cover-logo-mark {
+  width: 52px; height: 52px;
+  background: var(--green);
+  border-radius: 14px;
+  display: flex; align-items: center; justify-content: center;
+}
+.cover-wordmark { font-family: 'Fraunces', serif; font-size: 28px; color: #fff; letter-spacing: -0.5px; }
+.cover-meta { font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: rgba(255,255,255,0.4); text-align: right; line-height: 2; }
+.cover-center { position: relative; z-index: 1; }
+.cover-tag { font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--orange); letter-spacing: 2px; margin-bottom: 20px; }
+.cover-title { font-family: 'Fraunces', serif; font-size: 72px; font-weight: 700; color: #fff; line-height: 1.0; letter-spacing: -2px; margin-bottom: 24px; }
+.cover-subtitle { font-size: 16px; color: rgba(255,255,255,0.5); max-width: 520px; line-height: 1.7; }
+.cover-pills { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 32px; }
+.cover-pill { padding: 5px 14px; border: 1px solid rgba(255,255,255,0.15); border-radius: 20px; font-family: 'IBM Plex Mono', monospace; font-size: 9px; color: rgba(255,255,255,0.5); }
+.cover-bottom { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 32px; }
+.cover-stat label { font-family: 'IBM Plex Mono', monospace; font-size: 9px; color: rgba(255,255,255,0.3); display: block; margin-bottom: 4px; }
+.cover-stat span { font-family: 'Fraunces', serif; font-size: 22px; color: #fff; }
+
+/* ── PAGE LAYOUT ── */
+.page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 64px 80px;
+  border-bottom: 1px solid var(--line);
+}
+.page-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 40px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--line);
+}
+.page-num { font-family: 'IBM Plex Mono', monospace; font-size: 9px; color: var(--muted); }
+.section-tag { font-family: 'IBM Plex Mono', monospace; font-size: 9px; color: var(--orange); letter-spacing: 2px; display: block; margin-bottom: 8px; }
+.page-title { font-family: 'Fraunces', serif; font-size: 36px; font-weight: 700; letter-spacing: -1px; line-height: 1.1; }
+.page-desc { font-size: 12px; color: var(--muted); max-width: 420px; line-height: 1.7; margin-top: 6px; }
+
+/* ── GRID BACKGROUND ── */
+.with-grid {
+  background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 24px 24px;
+  background-color: var(--white);
+  border-radius: 12px;
+  padding: 32px;
+  border: 1px solid var(--line);
+}
+
+/* ── PHONE FRAME ── */
+.phone {
+  width: 220px;
+  background: var(--screen-bg);
+  border: 2px solid var(--screen-border);
+  border-radius: 32px;
+  overflow: hidden;
+  box-shadow: 0 12px 40px rgba(26,24,20,0.12), inset 0 0 0 4px rgba(255,255,255,0.8);
+  flex-shrink: 0;
+  position: relative;
+}
+.phone-notch {
+  width: 60px; height: 16px;
+  background: var(--screen-border);
+  border-radius: 0 0 10px 10px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 2;
+}
+.phone-screen { padding: 10px 10px 12px; }
+.phone-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9px; color: var(--muted);
+  text-align: center; margin-top: 10px;
+  letter-spacing: 1px;
+}
+
+/* ── WIREFRAME COMPONENTS inside phone ── */
+.wf-topbar {
+  background: #fff;
+  border-bottom: 1px solid #E5E0D8;
+  padding: 6px 8px;
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 8px;
+}
+.wf-topbar .logo-box { width: 18px; height: 18px; background: var(--green); border-radius: 4px; }
+.wf-topbar .logo-text { font-size: 9px; font-weight: 700; margin-left: 4px; }
+.wf-topbar .badge-role { font-family: 'IBM Plex Mono', monospace; font-size: 6px; background: #F0EDE8; padding: 1px 4px; border-radius: 3px; color: #78746A; margin-left: 3px; }
+.wf-topbar .av { width: 18px; height: 18px; border-radius: 50%; background: var(--green-lt); border: 1.5px solid var(--green); display: flex; align-items: center; justify-content: center; font-size: 6px; font-weight: 700; color: var(--green); }
+
+.wf-h1 { font-size: 11px; font-weight: 700; letter-spacing: -0.3px; margin-bottom: 1px; }
+.wf-h2 { font-size: 9px; font-weight: 700; letter-spacing: -0.2px; margin-bottom: 6px; }
+.wf-sub { font-size: 7px; color: var(--muted); margin-bottom: 8px; }
+.wf-muted { font-size: 7px; color: var(--muted); }
+
+.wf-stat-row { display: grid; grid-template-columns: repeat(3,1fr); gap: 4px; margin-bottom: 7px; }
+.wf-stat-row-2 { display: grid; grid-template-columns: repeat(2,1fr); gap: 4px; margin-bottom: 7px; }
+.wf-stat { background: #F0EDE8; border-radius: 5px; padding: 5px 4px; text-align: center; }
+.wf-stat .n { font-size: 11px; font-weight: 700; }
+.wf-stat .l { font-size: 5.5px; color: var(--muted); margin-top: 1px; }
+
+.wf-card { background: #fff; border: 1px solid #E5E0D8; border-radius: 7px; padding: 7px 8px; margin-bottom: 6px; }
+.wf-card-hd { font-family: 'IBM Plex Mono', monospace; font-size: 5.5px; color: var(--muted); letter-spacing: .5px; text-transform: uppercase; margin-bottom: 6px; }
+
+.wf-chart { display: flex; align-items: flex-end; gap: 2px; height: 30px; margin: 4px 0 3px; }
+.wf-bar { flex: 1; border-radius: 1.5px 1.5px 0 0; }
+
+.wf-alert { border-radius: 4px; padding: 4px 5px; margin-bottom: 3px; font-size: 6px; display: flex; gap: 4px; align-items: flex-start; line-height: 1.4; }
+.wf-alert-r { background: var(--red-lt); color: var(--red); border-left: 2px solid var(--red); }
+.wf-alert-y { background: var(--yellow-lt); color: #B07D10; border-left: 2px solid #B07D10; }
+.wf-alert-g { background: var(--green-lt); color: var(--green); border-left: 2px solid var(--green); }
+
+.wf-li { display: flex; align-items: center; justify-content: space-between; padding: 4px 0; border-bottom: 1px solid #F0EDE8; }
+.wf-li:last-child { border-bottom: none; }
+.wf-li-ic { width: 18px; height: 18px; background: #F0EDE8; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 8px; flex-shrink: 0; }
+.wf-li-body { flex: 1; margin: 0 5px; }
+.wf-li-t { font-size: 6.5px; font-weight: 600; }
+.wf-li-s { font-size: 5.5px; color: var(--muted); }
+.wf-li-r { font-size: 7px; font-weight: 700; }
+
+.wf-tag { display: inline-flex; align-items: center; padding: 1px 5px; border-radius: 10px; font-size: 5px; font-weight: 700; }
+.wf-tag-g { background: var(--green-lt); color: var(--green); }
+.wf-tag-o { background: var(--orange-lt); color: var(--orange); }
+.wf-tag-r { background: var(--red-lt); color: var(--red); }
+.wf-tag-y { background: var(--yellow-lt); color: #B07D10; }
+.wf-tag-b { background: var(--blue-lt); color: var(--blue); }
+
+.wf-bnav { background: #fff; border-top: 1px solid #E5E0D8; padding: 5px 8px; display: flex; justify-content: space-around; margin-top: 4px; }
+.wf-ni { display: flex; flex-direction: column; align-items: center; gap: 1.5px; }
+.wf-ni .icon { width: 12px; height: 12px; background: #F0EDE8; border-radius: 2px; }
+.wf-ni.active .icon { background: var(--green-lt); }
+.wf-ni .lbl { font-size: 5px; color: var(--muted); }
+.wf-ni.active .lbl { color: var(--green); font-weight: 600; }
+
+.wf-input { width: 100%; background: #fff; border: 1px solid #DDD8CE; border-radius: 4px; padding: 4px 6px; font-size: 6.5px; color: var(--muted); margin-bottom: 4px; }
+.wf-select { width: 100%; background: #fff; border: 1px solid #DDD8CE; border-radius: 4px; padding: 4px 6px; font-size: 6.5px; color: var(--muted); margin-bottom: 4px; display: flex; justify-content: space-between; align-items: center; }
+.wf-label { font-size: 5.5px; font-weight: 600; color: var(--muted); margin-bottom: 2px; display: block; }
+.wf-btn-p { width: 100%; background: var(--green); color: #fff; border: none; border-radius: 4px; padding: 5px; font-size: 7px; font-weight: 600; text-align: center; margin-top: 4px; }
+.wf-btn-o { width: 100%; background: transparent; color: var(--ink); border: 1px solid #DDD8CE; border-radius: 4px; padding: 5px; font-size: 7px; font-weight: 600; text-align: center; margin-top: 4px; }
+.wf-btn-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; margin-top: 4px; }
+.wf-2col { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; }
+
+.wf-steps { display: flex; align-items: center; margin-bottom: 8px; }
+.wf-step-dot { width: 14px; height: 14px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 6px; font-weight: 700; flex-shrink: 0; }
+.wf-step-dot.done { background: var(--green); color: #fff; }
+.wf-step-dot.active { background: var(--green); color: #fff; box-shadow: 0 0 0 3px var(--green-lt); }
+.wf-step-dot.pending { background: #E5E0D8; color: var(--muted); }
+.wf-step-line { flex: 1; height: 1.5px; }
+.wf-step-line.done { background: var(--green); }
+.wf-step-line.pending { background: #E5E0D8; }
+
+.wf-table { width: 100%; border-collapse: collapse; font-size: 5.5px; }
+.wf-table th { background: #F0EDE8; padding: 3px 4px; text-align: left; color: var(--muted); font-weight: 700; }
+.wf-table td { padding: 3.5px 4px; border-bottom: 1px solid #F0EDE8; }
+
+.wf-switch-row { display: flex; align-items: center; justify-content: space-between; padding: 4px 0; border-bottom: 1px solid #F0EDE8; }
+.wf-sw { width: 20px; height: 11px; border-radius: 6px; position: relative; }
+.wf-sw-on { background: var(--green); }
+.wf-sw-off { background: #DDD8CE; }
+.wf-sw-thumb { width: 9px; height: 9px; background: #fff; border-radius: 50%; position: absolute; top: 1px; box-shadow: 0 1px 2px rgba(0,0,0,.2); }
+
+.wf-divider { height: 1px; background: #E5E0D8; margin: 6px 0; }
+
+/* Login screen specific */
+.wf-login-logo { text-align: center; padding: 16px 0 8px; }
+.wf-login-logo .mark { width: 30px; height: 30px; background: var(--green); border-radius: 8px; margin: 0 auto 6px; display: flex; align-items: center; justify-content: center; }
+.wf-login-logo .name { font-size: 12px; font-weight: 700; }
+
+/* Role select */
+.wf-role-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; margin: 8px 0; }
+.wf-role-card { background: #fff; border: 1px solid #DDD8CE; border-radius: 6px; padding: 8px 6px; }
+.wf-role-card .ic { font-size: 12px; margin-bottom: 4px; }
+.wf-role-card .t { font-size: 6.5px; font-weight: 700; }
+.wf-role-card .s { font-size: 5.5px; color: var(--muted); margin-top: 1px; line-height: 1.4; }
+
+/* ── ANNOTATIONS ── */
+.anno-wrap { position: relative; }
+.anno {
+  position: absolute;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9px;
+  color: var(--anno);
+  line-height: 1.5;
+  max-width: 180px;
+}
+.anno-line {
+  position: absolute;
+  border-top: 1px dashed var(--anno);
+  opacity: 0.5;
+  transform-origin: left center;
+}
+.anno-dot {
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: var(--anno);
+  position: absolute;
+}
+.callout {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  margin-bottom: 8px;
+}
+.callout-num {
+  width: 22px; height: 22px;
+  background: var(--orange);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px; font-weight: 600; color: #fff;
+  flex-shrink: 0;
+}
+.callout-body strong { font-size: 12px; display: block; margin-bottom: 2px; }
+.callout-body p { font-size: 11px; color: var(--muted); line-height: 1.6; }
+
+/* ── GRID LAYOUTS ── */
+.screens-grid { display: flex; gap: 28px; align-items: flex-start; justify-content: center; flex-wrap: wrap; }
+.screens-row { display: flex; gap: 20px; align-items: flex-start; justify-content: center; flex-wrap: wrap; }
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: start; }
+.three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 32px; }
+.annotations-col { padding-left: 20px; border-left: 2px solid var(--orange-lt); }
+
+/* ── FLOW DIAGRAM ── */
+.flow-node {
+  background: #fff;
+  border: 1.5px solid var(--line);
+  border-radius: 10px;
+  padding: 10px 16px;
+  font-size: 11px;
+  font-weight: 600;
+  text-align: center;
+  min-width: 120px;
+  position: relative;
+}
+.flow-node.start { background: var(--green); color: #fff; border-color: var(--green); }
+.flow-node.role { background: var(--ink); color: #fff; border-color: var(--ink); }
+.flow-node.screen { background: var(--white); border-color: var(--green); color: var(--green); }
+.flow-node.action { background: var(--orange-lt); border-color: var(--orange); color: var(--orange); }
+.flow-arrow { display: flex; align-items: center; justify-content: center; padding: 4px 0; color: var(--muted); font-size: 14px; }
+.flow-row { display: flex; align-items: center; gap: 12px; justify-content: center; flex-wrap: wrap; }
+.flow-h-arrow { width: 20px; height: 1px; background: var(--line); position: relative; flex-shrink: 0; }
+.flow-h-arrow::after { content: '▶'; position: absolute; right: -6px; top: -6px; font-size: 10px; color: var(--muted); }
+.flow-branch { display: flex; gap: 60px; justify-content: center; }
+.flow-branch-col { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+.flow-branch-label { font-family: 'IBM Plex Mono', monospace; font-size: 9px; color: var(--muted); letter-spacing: 1px; background: #fff; padding: 2px 8px; border: 1px solid var(--line); border-radius: 4px; margin-bottom: 2px; }
+
+/* ── COMPONENT LIBRARY ── */
+.comp-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.comp-item { background: var(--white); border: 1px solid var(--line); border-radius: 10px; padding: 16px; }
+.comp-label { font-family: 'IBM Plex Mono', monospace; font-size: 9px; color: var(--muted); margin-bottom: 10px; }
+.comp-preview { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+
+/* ── COLOR PALETTE ── */
+.color-row { display: flex; gap: 10px; flex-wrap: wrap; }
+.color-swatch { width: 52px; }
+.color-block { height: 52px; border-radius: 8px; margin-bottom: 6px; border: 1px solid rgba(0,0,0,.05); }
+.color-name { font-family: 'IBM Plex Mono', monospace; font-size: 8px; color: var(--muted); }
+.color-hex { font-family: 'IBM Plex Mono', monospace; font-size: 9px; font-weight: 600; }
+
+/* ── SPEC TABLE ── */
+.spec-table { width: 100%; border-collapse: collapse; }
+.spec-table th { text-align: left; padding: 8px 12px; background: #F0EDE8; font-size: 11px; font-weight: 700; border-bottom: 1px solid var(--line); }
+.spec-table td { padding: 9px 12px; border-bottom: 1px solid var(--line); font-size: 11px; vertical-align: top; }
+.spec-table td:first-child { font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--muted); white-space: nowrap; }
+.spec-table tr:hover td { background: var(--white); }
+
+/* ── TAGS FOR DOC ── */
+.tag-doc { display: inline-flex; align-items: center; padding: 2px 9px; border-radius: 20px; font-size: 10px; font-weight: 700; }
+.tag-g { background: var(--green-lt); color: var(--green); }
+.tag-o { background: var(--orange-lt); color: var(--orange); }
+.tag-r { background: var(--red-lt); color: var(--red); }
+.tag-b { background: var(--blue-lt); color: var(--blue); }
+.tag-k { background: #F0EDE8; color: var(--muted); }
+
+/* ── REQUIREMENT CARDS ── */
+.req-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.req-card { background: var(--white); border: 1px solid var(--line); border-radius: 10px; padding: 16px; }
+.req-card h4 { font-size: 12px; font-weight: 700; margin-bottom: 6px; display: flex; align-items: center; gap: 8px; }
+.req-card ul { padding-left: 14px; }
+.req-card li { font-size: 11px; color: var(--muted); margin-bottom: 4px; line-height: 1.6; }
+
+/* ── PERSONA CARDS ── */
+.persona-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+.persona { background: var(--white); border: 1px solid var(--line); border-radius: 12px; padding: 18px 16px; }
+.persona-avatar { width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 22px; margin-bottom: 10px; }
+.persona h4 { font-size: 12px; font-weight: 700; margin-bottom: 2px; }
+.persona .role { font-size: 10px; color: var(--muted); margin-bottom: 10px; font-family: 'IBM Plex Mono', monospace; }
+.persona ul { padding-left: 14px; }
+.persona li { font-size: 10px; color: var(--muted); margin-bottom: 3px; line-height: 1.5; }
+
+/* ── PRINT ── */
+@media print {
+  .cover { page-break-after: always; min-height: auto; padding: 40px; }
+  .page { padding: 40px; border-bottom: none; page-break-inside: avoid; }
+}
+
+/* ── SECTION DIVIDER ── */
+.section-divider {
+  background: var(--ink);
+  color: #fff;
+  padding: 20px 80px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.section-divider .num { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: rgba(255,255,255,0.3); }
+.section-divider .title { font-family: 'Fraunces', serif; font-size: 22px; letter-spacing: -0.5px; }
+.section-divider .desc { font-size: 11px; color: rgba(255,255,255,0.4); margin-left: auto; max-width: 280px; text-align: right; }
+
+/* Utility */
+.mt-8 { margin-top: 8px; }
+.mt-16 { margin-top: 16px; }
+.mt-24 { margin-top: 24px; }
+.mt-32 { margin-top: 32px; }
+.mb-16 { margin-bottom: 16px; }
+.flex { display: flex; }
+.gap-8 { gap: 8px; }
+.gap-16 { gap: 16px; }
+.wrap { flex-wrap: wrap; }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════ COVER ═══════════════════════════════════ -->
+<div class="cover">
+  <div class="cover-top">
+    <div class="cover-logo">
+      <div class="cover-logo-mark">
+        <svg viewBox="0 0 24 24" width="28" height="28" fill="white"><path d="M20 3H4v10c0 3.3 2.7 6 6 6h4c3.3 0 6-2.7 6-6V3zm-2 10c0 2.2-1.8 4-4 4h-4c-2.2 0-4-1.8-4-4V5h12v8z"/><path d="M12 19v2M8 21h8"/></svg>
+      </div>
+      <span class="cover-wordmark">RePlate</span>
+    </div>
+    <div class="cover-meta">
+      SE365 · Human-Computer Interaction<br>
+      Prince Sultan University<br>
+      Milestone 2 — Lo-Fi Prototype<br>
+      March 2026
+    </div>
+  </div>
+
+  <div class="cover-center">
+    <div class="cover-tag">UI/UX WIREFRAME DOCUMENT</div>
+    <div class="cover-title">Hospital Food<br>Waste Tracking<br>Platform</div>
+    <div class="cover-subtitle">Complete UI/UX wireframes, navigation flows, interaction specifications, and design system for the RePlate prototype — connecting hospital operations with certified waste processing partners.</div>
+    <div class="cover-pills">
+      <div class="cover-pill">4 USER ROLES</div>
+      <div class="cover-pill">12 SCREENS</div>
+      <div class="cover-pill">3 STORYBOARD FLOWS</div>
+      <div class="cover-pill">ROLE-BASED AUTH</div>
+      <div class="cover-pill">SHARED DATABASE</div>
+      <div class="cover-pill">MOBILE-FIRST</div>
+    </div>
+  </div>
+
+  <div class="cover-bottom">
+    <div class="cover-stat"><label>PROJECT</label><span>RePlate</span></div>
+    <div class="cover-stat"><label>COURSE</label><span>SE365</span></div>
+    <div class="cover-stat"><label>MILESTONE</label><span>M-2</span></div>
+    <div class="cover-stat"><label>SCREENS</label><span>12</span></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════ SECTION 01 — PROJECT OVERVIEW ═══════════════════════ -->
+<div class="section-divider">
+  <span class="num">01</span>
+  <span class="title">Project Overview & Research Findings</span>
+  <span class="desc">Context, personas, and key user research from Milestone 1</span>
+</div>
+
+<div class="page">
+  <div class="page-header">
+    <div>
+      <span class="section-tag">SECTION 01 / PROJECT OVERVIEW</span>
+      <div class="page-title">Why RePlate Exists</div>
+      <div class="page-desc">Hospital food waste in KSA is largely untracked and fragmented. RePlate bridges the gap between waste generation and certified disposal partners.</div>
+    </div>
+    <div class="page-num">P.01</div>
+  </div>
+
+  <div class="two-col">
+    <div>
+      <h3 style="font-size:14px;font-weight:700;margin-bottom:16px">Research Summary (N=15)</h3>
+      <div class="req-grid">
+        <div class="req-card">
+          <h4>⚠️ Core Pain Points</h4>
+          <ul>
+            <li>Manual tracking is labor-intensive with no standard template</li>
+            <li>Data fragmented across departments, no central view</li>
+            <li>No real-time alerts or threshold monitoring</li>
+            <li>Partner coordination done via phone/WhatsApp</li>
+            <li>No compliance-ready reports for regulators</li>
+          </ul>
+        </div>
+        <div class="req-card">
+          <h4>📊 Survey Results</h4>
+          <ul>
+            <li><strong>60%</strong> report significant daily food waste</li>
+            <li><strong>86.7%</strong> want real-time digital tracking</li>
+            <li><strong>73.3%</strong> prefer mobile-accessible tools</li>
+            <li><strong>100%</strong> require internal server hosting (MoD)</li>
+            <li><strong>86.7%</strong> need multi-department access</li>
+          </ul>
+        </div>
+        <div class="req-card">
+          <h4>✅ Critical Requirements</h4>
+          <ul>
+            <li>Minimal manual input — quick logging forms</li>
+            <li>Internal server hosting (Ministry requirement)</li>
+            <li>Role-based access control (4 roles)</li>
+            <li>Response / support SLA: &lt;24 hours</li>
+            <li>CSV / PDF data export for compliance</li>
+          </ul>
+        </div>
+        <div class="req-card">
+          <h4>🏥 System Integration</h4>
+          <ul>
+            <li>Compatible with existing hospital IT infrastructure</li>
+            <li>Works on hospital intranet (no external cloud)</li>
+            <li>Partner notification via internal messaging</li>
+            <li>Audit trails for all user actions</li>
+            <li>Daily automated backup at 02:00 AM</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div>
+      <h3 style="font-size:14px;font-weight:700;margin-bottom:16px">User Personas</h3>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div class="req-card" style="display:flex;gap:12px;align-items:flex-start">
+          <div style="width:38px;height:38px;background:#E4F2EB;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0">🍳</div>
+          <div><strong style="font-size:12px">Faisal Ahmed</strong> — <span style="font-size:10px;color:var(--muted)">Operations Coordinator</span><br><span style="font-size:10px;color:var(--muted);line-height:1.6">Logs waste daily, needs quick mobile form. Tech-moderate. Frustrated by manual paper sheets.</span></div>
+        </div>
+        <div class="req-card" style="display:flex;gap:12px;align-items:flex-start">
+          <div style="width:38px;height:38px;background:#EEF2FF;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0">📋</div>
+          <div><strong style="font-size:12px">Sara Al-Qahtani</strong> — <span style="font-size:10px;color:var(--muted)">Compliance Officer</span><br><span style="font-size:10px;color:var(--muted);line-height:1.6">Needs audit reports & exports. High data literacy. Concerned about regulation alignment (Saudi Vision 2030).</span></div>
+        </div>
+        <div class="req-card" style="display:flex;gap:12px;align-items:flex-start">
+          <div style="width:38px;height:38px;background:#FDF1E8;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0">🚛</div>
+          <div><strong style="font-size:12px">Dr. Lina Al-Qahtani</strong> — <span style="font-size:10px;color:var(--muted)">Hospital Ops Manager</span><br><span style="font-size:10px;color:var(--muted);line-height:1.6">Oversees all departments, monitors KPIs and trends. Approves pickup requests. Strategic decision-maker.</span></div>
+        </div>
+        <div class="req-card" style="display:flex;gap:12px;align-items:flex-start">
+          <div style="width:38px;height:38px;background:#FDECEA;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0">♻️</div>
+          <div><strong style="font-size:12px">Ahmed Al-Saud</strong> — <span style="font-size:10px;color:var(--muted)">Waste Partner Rep (GreenCo)</span><br><span style="font-size:10px;color:var(--muted);line-height:1.6">Receives and updates pickup requests. Needs clear schedule and waste classification data for his drivers.</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════ SECTION 02 — NAVIGATION FLOW ═══════════════════════ -->
+<div class="section-divider">
+  <span class="num">02</span>
+  <span class="title">Navigation Flow & Architecture</span>
+  <span class="desc">Role-based screen routing and user journey map</span>
+</div>
+
+<div class="page">
+  <div class="page-header">
+    <div>
+      <span class="section-tag">SECTION 02 / NAVIGATION</span>
+      <div class="page-title">Role-Based Navigation System</div>
+      <div class="page-desc">Each role enters through secure login and accesses only their permitted screens. All roles share the same codebase with permission-gated views.</div>
+    </div>
+    <div class="page-num">P.02</div>
+  </div>
+
+  <!-- Flow diagram -->
+  <div class="with-grid">
+    <!-- Entry -->
+    <div style="display:flex;flex-direction:column;align-items:center;gap:6px;margin-bottom:24px">
+      <div class="flow-node start" style="width:160px">🌐 App Entry Point</div>
+      <div class="flow-arrow">↓</div>
+      <div class="flow-node" style="width:200px;border-color:var(--orange);background:var(--orange-lt);color:var(--orange)">🔐 Role Selector Screen</div>
+      <div class="flow-arrow">↓</div>
+      <div class="flow-node" style="width:200px;border-color:var(--ink);background:var(--ink);color:#fff">🔑 Login (Email + Password)</div>
+      <div class="flow-arrow">↓</div>
+    </div>
+
+    <!-- 4 branches -->
+    <div class="flow-branch" style="gap:16px">
+
+      <div class="flow-branch-col">
+        <div class="flow-branch-label">KITCHEN STAFF</div>
+        <div class="flow-node screen" style="font-size:10px;padding:7px 10px;min-width:100px">🏠 Dashboard</div>
+        <div style="font-size:10px;color:var(--muted);text-align:center">↓</div>
+        <div class="flow-node action" style="font-size:9px;padding:6px 8px;min-width:100px">＋ Log Waste</div>
+        <div style="font-size:10px;color:var(--muted);text-align:center">↓</div>
+        <div class="flow-node screen" style="font-size:10px;padding:7px 10px;min-width:100px">📄 Reports</div>
+        <div style="font-size:10px;color:var(--muted);text-align:center">↓</div>
+        <div class="flow-node screen" style="font-size:10px;padding:7px 10px;min-width:100px">🚛 Partner</div>
+        <div style="font-size:10px;color:var(--muted);text-align:center">↓</div>
+        <div class="flow-node" style="font-size:9px;padding:5px;min-width:100px;background:#F0EDE8;border-color:var(--line);color:var(--muted)">🔓 Logout</div>
+      </div>
+
+      <div class="flow-branch-col">
+        <div class="flow-branch-label">MANAGER</div>
+        <div class="flow-node screen" style="font-size:10px;padding:7px 10px;min-width:100px">🏠 Dashboard</div>
+        <div style="font-size:10px;color:var(--muted);text-align:center">↓</div>
+        <div class="flow-node screen" style="font-size:10px;padding:7px 10px;min-width:100px">📄 Reports</div>
+        <div style="font-size:10px;color:var(--muted);text-align:center">↓</div>
+        <div class="flow-node screen" style="font-size:10px;padding:7px 10px;min-width:100px">🚛 Partner</div>
+        <div style="font-size:10px;color:var(--muted);text-align:center">↓</div>
+        <div class="flow-node" style="font-size:9px;padding:5px;min-width:100px;background:#F0EDE8;border-color:var(--line);color:var(--muted)">🔓 Logout</div>
+      </div>
+
+      <div class="flow-branch-col">
+        <div class="flow-branch-label">PARTNER ORG</div>
+        <div class="flow-node screen" style="font-size:10px;padding:7px 10px;min-width:100px">🏠 Dashboard</div>
+        <div style="font-size:10px;color:var(--muted);text-align:center">↓</div>
+        <div class="flow-node screen" style="font-size:10px;padding:7px 10px;min-width:100px">📋 Pickups List</div>
+        <div style="font-size:10px;color:var(--muted);text-align:center">↓</div>
+        <div class="flow-node action" style="font-size:9px;padding:6px 8px;min-width:100px">✅ Update Status</div>
+        <div style="font-size:10px;color:var(--muted);text-align:center">↓</div>
+        <div class="flow-node" style="font-size:9px;padding:5px;min-width:100px;background:#F0EDE8;border-color:var(--line);color:var(--muted)">🔓 Logout</div>
+      </div>
+
+      <div class="flow-branch-col">
+        <div class="flow-branch-label">SYSTEM ADMIN</div>
+        <div class="flow-node screen" style="font-size:10px;padding:7px 10px;min-width:100px">🏠 Dashboard</div>
+        <div style="font-size:10px;color:var(--muted);text-align:center">↓</div>
+        <div class="flow-node screen" style="font-size:10px;padding:7px 10px;min-width:100px">📄 Reports</div>
+        <div style="font-size:10px;color:var(--muted);text-align:center">↓</div>
+        <div class="flow-node screen" style="font-size:10px;padding:7px 10px;min-width:100px">🚛 Partner</div>
+        <div style="font-size:10px;color:var(--muted);text-align:center">↓</div>
+        <div class="flow-node action" style="font-size:9px;padding:6px 8px;min-width:100px">⚙️ Admin Panel</div>
+        <div style="font-size:10px;color:var(--muted);text-align:center">↓</div>
+        <div class="flow-node" style="font-size:9px;padding:5px;min-width:100px;background:#F0EDE8;border-color:var(--line);color:var(--muted)">🔓 Logout</div>
+      </div>
+
+    </div>
+
+    <!-- Legend -->
+    <div style="display:flex;gap:16px;margin-top:28px;padding-top:16px;border-top:1px solid var(--line);flex-wrap:wrap">
+      <div style="display:flex;align-items:center;gap:6px"><div style="width:12px;height:12px;background:var(--green);border-radius:3px"></div><span style="font-size:10px;color:var(--muted)">Entry point</span></div>
+      <div style="display:flex;align-items:center;gap:6px"><div style="width:12px;height:12px;background:var(--orange-lt);border:1.5px solid var(--orange);border-radius:3px"></div><span style="font-size:10px;color:var(--muted)">Auth screen</span></div>
+      <div style="display:flex;align-items:center;gap:6px"><div style="width:12px;height:12px;background:var(--white);border:1.5px solid var(--green);border-radius:3px"></div><span style="font-size:10px;color:var(--muted)">Main screen</span></div>
+      <div style="display:flex;align-items:center;gap:6px"><div style="width:12px;height:12px;background:var(--orange-lt);border-radius:3px"></div><span style="font-size:10px;color:var(--muted)">User action</span></div>
+      <div style="display:flex;align-items:center;gap:6px"><div style="width:12px;height:12px;background:#F0EDE8;border-radius:3px"></div><span style="font-size:10px;color:var(--muted)">Logout</span></div>
+    </div>
+  </div>
+
+  <!-- Screen inventory -->
+  <div class="mt-24">
+    <h3 style="font-size:14px;font-weight:700;margin-bottom:14px">Screen Inventory (12 Screens)</h3>
+    <table class="spec-table">
+      <thead><tr><th>Screen ID</th><th>Screen Name</th><th>Accessible By</th><th>Primary Action</th><th>Nav Tab</th></tr></thead>
+      <tbody>
+        <tr><td>S-01</td><td>Role Selector</td><td><span class="tag-doc tag-k">All Users</span></td><td>Choose login role</td><td>—</td></tr>
+        <tr><td>S-02</td><td>Login</td><td><span class="tag-doc tag-k">All Users</span></td><td>Enter email + password</td><td>—</td></tr>
+        <tr><td>S-03</td><td>Dashboard — Staff</td><td><span class="tag-doc tag-g">Staff</span></td><td>View KPIs, recent entries, quick log</td><td>Dashboard</td></tr>
+        <tr><td>S-04</td><td>Dashboard — Manager</td><td><span class="tag-doc tag-b">Manager</span></td><td>Analytics overview, trend chart, alerts</td><td>Dashboard</td></tr>
+        <tr><td>S-05</td><td>Dashboard — Partner</td><td><span class="tag-doc tag-o">Partner</span></td><td>Pickup summary, waste data overview</td><td>Dashboard</td></tr>
+        <tr><td>S-06</td><td>Dashboard — Admin</td><td><span class="tag-doc tag-r">Admin</span></td><td>System health, user count, full overview</td><td>Dashboard</td></tr>
+        <tr><td>S-07</td><td>Log Waste (Step 1+2)</td><td><span class="tag-doc tag-g">Staff</span></td><td>2-step waste logging form</td><td>Log Waste</td></tr>
+        <tr><td>S-08</td><td>Reports</td><td><span class="tag-doc tag-b">Manager</span> <span class="tag-doc tag-r">Admin</span> <span class="tag-doc tag-g">Staff</span></td><td>Filter, view, export waste data</td><td>Reports</td></tr>
+        <tr><td>S-09</td><td>Partner Coordination (Hospital)</td><td><span class="tag-doc tag-b">Manager</span> <span class="tag-doc tag-g">Staff</span> <span class="tag-doc tag-r">Admin</span></td><td>Create & track pickup requests</td><td>Partner</td></tr>
+        <tr><td>S-10</td><td>Partner View (Pickup Requests)</td><td><span class="tag-doc tag-o">Partner</span></td><td>Accept / update pickup status</td><td>Pickups</td></tr>
+        <tr><td>S-11</td><td>Admin Panel</td><td><span class="tag-doc tag-r">Admin</span></td><td>Manage users, settings, system</td><td>Admin</td></tr>
+        <tr><td>S-12</td><td>Log Success / Confirmation</td><td><span class="tag-doc tag-g">Staff</span></td><td>Entry summary + next action</td><td>—</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ═══════════════════════ SECTION 03 — AUTH SCREENS ═══════════════════════ -->
+<div class="section-divider">
+  <span class="num">03</span>
+  <span class="title">Authentication Screens</span>
+  <span class="desc">S-01 Role Selector · S-02 Login</span>
+</div>
+
+<div class="page">
+  <div class="page-header">
+    <div>
+      <span class="section-tag">SECTION 03 / AUTH</span>
+      <div class="page-title">Login & Role Selection</div>
+      <div class="page-desc">Users first select their role, then authenticate with email and password. No pre-filled credentials — hospital fills their own accounts.</div>
+    </div>
+    <div class="page-num">P.03</div>
+  </div>
+
+  <div class="screens-grid" style="align-items:flex-start">
+
+    <!-- Role Selector -->
+    <div>
+      <div class="phone">
+        <div class="phone-notch"></div>
+        <div class="phone-screen">
+          <div style="text-align:center;padding:14px 0 10px">
+            <div style="width:36px;height:36px;background:var(--green);border-radius:10px;margin:0 auto 8px;display:flex;align-items:center;justify-content:center">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="white"><path d="M20 3H4v10c0 3.3 2.7 6 6 6h4c3.3 0 6-2.7 6-6V3zm-2 10c0 2.2-1.8 4-4 4h-4c-2.2 0-4-1.8-4-4V5h12v8z"/><path d="M12 19v2M8 21h8"/></svg>
+            </div>
+            <div style="font-size:13px;font-weight:700">RePlate</div>
+            <div style="font-size:6px;color:var(--muted);margin-top:2px">Hospital Food Waste Tracking</div>
+            <div style="font-size:6px;color:var(--green);background:var(--green-lt);padding:2px 8px;border-radius:10px;display:inline-block;margin-top:4px">● Live Shared Database</div>
+          </div>
+          <div style="font-size:7px;color:var(--muted);text-align:center;margin-bottom:8px">Select your role to continue</div>
+          <div class="wf-role-grid">
+            <div class="wf-role-card">
+              <div class="ic">🍳</div>
+              <div class="t">Kitchen Staff</div>
+              <div class="s">Log waste for your department</div>
+            </div>
+            <div class="wf-role-card" style="border-color:var(--green);background:var(--green-lt)">
+              <div class="ic">📊</div>
+              <div class="t" style="color:var(--green)">Manager</div>
+              <div class="s">Dashboard & analytics</div>
+            </div>
+            <div class="wf-role-card">
+              <div class="ic">🚛</div>
+              <div class="t">Partner Org</div>
+              <div class="s">View pickup requests</div>
+            </div>
+            <div class="wf-role-card">
+              <div class="ic">⚙️</div>
+              <div class="t">System Admin</div>
+              <div class="s">Manage users & system</div>
+            </div>
+          </div>
+          <div style="font-size:5.5px;color:var(--muted);text-align:center;margin-top:8px">SE365 · Prince Sultan University</div>
+        </div>
+      </div>
+      <div class="phone-label">S-01 · ROLE SELECTOR</div>
+    </div>
+
+    <!-- Login Empty -->
+    <div>
+      <div class="phone">
+        <div class="phone-notch"></div>
+        <div class="phone-screen">
+          <div class="wf-login-logo">
+            <div class="mark">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="white"><path d="M20 3H4v10c0 3.3 2.7 6 6 6h4c3.3 0 6-2.7 6-6V3zm-2 10c0 2.2-1.8 4-4 4h-4c-2.2 0-4-1.8-4-4V5h12v8z"/><path d="M12 19v2M8 21h8"/></svg>
+            </div>
+            <div class="name">RePlate</div>
+          </div>
+          <div style="font-size:6.5px;color:var(--muted);text-align:center;margin-bottom:14px">Signing in as <strong style="color:var(--green)">Kitchen Staff</strong></div>
+          <div class="wf-card">
+            <div class="wf-label">Email or Staff ID</div>
+            <div class="wf-input" style="color:#CCC;">Enter your hospital email…</div>
+            <div class="wf-label">Password</div>
+            <div class="wf-input" style="color:#CCC;">••••••••••</div>
+            <div class="wf-btn-p">Login →</div>
+            <div style="text-align:center;font-size:5.5px;color:var(--muted);margin-top:6px">Forgot password? Contact your admin</div>
+          </div>
+          <div style="text-align:center;font-size:6px;color:var(--green);margin-top:10px;cursor:pointer">← Change role</div>
+        </div>
+      </div>
+      <div class="phone-label">S-02 · LOGIN (EMPTY STATE)</div>
+    </div>
+
+    <!-- Login Error -->
+    <div>
+      <div class="phone">
+        <div class="phone-notch"></div>
+        <div class="phone-screen">
+          <div class="wf-login-logo">
+            <div class="mark">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="white"><path d="M20 3H4v10c0 3.3 2.7 6 6 6h4c3.3 0 6-2.7 6-6V3zm-2 10c0 2.2-1.8 4-4 4h-4c-2.2 0-4-1.8-4-4V5h12v8z"/><path d="M12 19v2M8 21h8"/></svg>
+            </div>
+            <div class="name">RePlate</div>
+          </div>
+          <div style="font-size:6.5px;color:var(--muted);text-align:center;margin-bottom:14px">Signing in as <strong style="color:var(--orange)">Partner Org</strong></div>
+          <div class="wf-card">
+            <div class="wf-label">Email or Staff ID</div>
+            <div class="wf-input" style="border-color:var(--red);color:var(--ink)">partner@greenco.sa</div>
+            <div class="wf-label">Password</div>
+            <div class="wf-input" style="border-color:var(--red);">••••••••</div>
+            <div style="background:var(--red-lt);border-left:2px solid var(--red);padding:4px 6px;font-size:6px;color:var(--red);border-radius:3px;margin-bottom:4px">⚠️ Incorrect email or password. Please try again.</div>
+            <div class="wf-btn-p" style="background:var(--red)">Try Again</div>
+            <div style="text-align:center;font-size:5.5px;color:var(--muted);margin-top:6px">Forgot password? Contact your admin</div>
+          </div>
+        </div>
+      </div>
+      <div class="phone-label">S-02b · LOGIN (ERROR STATE)</div>
+    </div>
+
+    <!-- Annotations -->
+    <div class="annotations-col" style="max-width:260px">
+      <h3 style="font-size:13px;font-weight:700;margin-bottom:16px">Authentication Notes</h3>
+      <div class="callout">
+        <div class="callout-num">1</div>
+        <div class="callout-body"><strong>No Pre-filled Credentials</strong><p>Login form starts completely empty. Each hospital creates their own accounts in the Admin panel. Zero hardcoded users.</p></div>
+      </div>
+      <div class="callout">
+        <div class="callout-num">2</div>
+        <div class="callout-body"><strong>Role-first Auth Flow</strong><p>User picks role before login. This allows role-specific UI rendering and validates credentials against role permissions.</p></div>
+      </div>
+      <div class="callout">
+        <div class="callout-num">3</div>
+        <div class="callout-body"><strong>Error State Handling</strong><p>Clear red-bordered fields + inline error message on incorrect credentials. No confusing generic errors.</p></div>
+      </div>
+      <div class="callout">
+        <div class="callout-num">4</div>
+        <div class="callout-body"><strong>Change Role Link</strong><p>"← Change role" at the bottom lets users go back without losing context — critical for users who accidentally picked the wrong role.</p></div>
+      </div>
+      <div class="callout">
+        <div class="callout-num">5</div>
+        <div class="callout-body"><strong>Forgot Password</strong><p>Directs user to their System Admin rather than email reset — aligns with internal server security policy (no external email servers).</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════ SECTION 04 — DASHBOARD SCREENS ═══════════════════════ -->
+<div class="section-divider">
+  <span class="num">04</span>
+  <span class="title">Dashboard Screens (All 4 Roles)</span>
+  <span class="desc">S-03 Staff · S-04 Manager · S-05 Partner · S-06 Admin</span>
+</div>
+
+<div class="page">
+  <div class="page-header">
+    <div>
+      <span class="section-tag">SECTION 04 / DASHBOARDS</span>
+      <div class="page-title">Role-Tailored Dashboards</div>
+      <div class="page-desc">Each role sees a dashboard customized to their job. Same component library, different data and action priorities.</div>
+    </div>
+    <div class="page-num">P.04</div>
+  </div>
+
+  <div class="screens-row">
+
+    <!-- Staff Dashboard -->
+    <div>
+      <div class="phone">
+        <div class="phone-notch"></div>
+        <div class="phone-screen">
+          <div class="wf-topbar">
+            <div style="display:flex;align-items:center"><div class="logo-box"></div><span class="logo-text">RePlate</span><span class="badge-role">STAFF</span></div>
+            <div class="av">KS</div>
+          </div>
+          <div class="wf-h1">Good morning 👋</div>
+          <div class="wf-sub">Saturday, 7 March 2026 · Kitchen A</div>
+          <div class="wf-stat-row">
+            <div class="wf-stat"><div class="n" style="color:var(--orange);font-size:10px">35</div><div class="l">kg Today</div></div>
+            <div class="wf-stat"><div class="n" style="color:var(--green);font-size:10px">2</div><div class="l">My Entries</div></div>
+            <div class="wf-stat"><div class="n" style="color:var(--orange);font-size:10px">1</div><div class="l">Pending</div></div>
+          </div>
+          <div class="wf-card">
+            <div class="wf-card-hd">📋 Recent Entries</div>
+            <div class="wf-li"><div class="wf-li-ic">🍖</div><div class="wf-li-body"><div class="wf-li-t">Kitchen A — Meat</div><div class="wf-li-s">09:14 · Overproduction</div></div><div class="wf-li-r">20kg</div></div>
+            <div class="wf-li"><div class="wf-li-ic">🍽️</div><div class="wf-li-body"><div class="wf-li-t">Ward B — Plate</div><div class="wf-li-s">11:30 · Unserved meals</div></div><div class="wf-li-r">15kg</div></div>
+          </div>
+          <div class="wf-btn-2">
+            <div class="wf-btn-p" style="font-size:6px">＋ Log Waste</div>
+            <div class="wf-btn-o" style="font-size:6px">🚛 Pickup</div>
+          </div>
+          <div class="wf-bnav">
+            <div class="wf-ni active"><div class="icon"></div><div class="lbl">Dashboard</div></div>
+            <div class="wf-ni"><div class="icon"></div><div class="lbl">Log</div></div>
+            <div class="wf-ni"><div class="icon"></div><div class="lbl">Reports</div></div>
+            <div class="wf-ni"><div class="icon"></div><div class="lbl">Partner</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="phone-label">S-03 · STAFF DASHBOARD</div>
+    </div>
+
+    <!-- Manager Dashboard -->
+    <div>
+      <div class="phone">
+        <div class="phone-notch"></div>
+        <div class="phone-screen">
+          <div class="wf-topbar">
+            <div style="display:flex;align-items:center"><div class="logo-box"></div><span class="logo-text">RePlate</span><span class="badge-role">MANAGER</span></div>
+            <div class="av">AM</div>
+          </div>
+          <div class="wf-h1">Manager Dashboard 📊</div>
+          <div class="wf-sub">● Saturday, 7 March 2026</div>
+          <div class="wf-stat-row">
+            <div class="wf-stat"><div class="n" style="color:var(--orange);font-size:10px">35</div><div class="l">kg Today</div></div>
+            <div class="wf-stat"><div class="n" style="color:var(--green);font-size:10px">2</div><div class="l">Entries</div></div>
+            <div class="wf-stat"><div class="n" style="color:var(--orange);font-size:10px">1</div><div class="l">Pickups</div></div>
+          </div>
+          <div class="wf-card">
+            <div class="wf-card-hd">📈 WEEKLY WASTE TREND (KG)</div>
+            <div class="wf-chart">
+              <div class="wf-bar" style="height:60%;background:var(--green);opacity:.7"></div>
+              <div class="wf-bar" style="height:35%;background:var(--green);opacity:.7"></div>
+              <div class="wf-bar" style="height:42%;background:var(--green);opacity:.7"></div>
+              <div class="wf-bar" style="height:52%;background:var(--green);opacity:.7"></div>
+              <div class="wf-bar" style="height:48%;background:var(--green);opacity:.7"></div>
+              <div class="wf-bar" style="height:55%;background:var(--green);opacity:.7"></div>
+              <div class="wf-bar" style="height:100%;background:var(--orange);opacity:.8"></div>
+            </div>
+          </div>
+          <div class="wf-card">
+            <div class="wf-card-hd">⚠️ ACTIVE ALERTS</div>
+            <div class="wf-alert wf-alert-y">🟠 1 pickup awaiting confirmation</div>
+            <div class="wf-alert wf-alert-g">🟢 System healthy — all data synced</div>
+          </div>
+          <div class="wf-bnav">
+            <div class="wf-ni active"><div class="icon"></div><div class="lbl">Dashboard</div></div>
+            <div class="wf-ni"><div class="icon"></div><div class="lbl">Reports</div></div>
+            <div class="wf-ni"><div class="icon"></div><div class="lbl">Partner</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="phone-label">S-04 · MANAGER DASHBOARD</div>
+    </div>
+
+    <!-- Partner Dashboard -->
+    <div>
+      <div class="phone">
+        <div class="phone-notch"></div>
+        <div class="phone-screen">
+          <div class="wf-topbar">
+            <div style="display:flex;align-items:center"><div class="logo-box"></div><span class="logo-text">RePlate</span><span class="badge-role">PARTNER</span></div>
+            <div class="av">FA</div>
+          </div>
+          <div class="wf-h1">Partner Overview 🚛</div>
+          <div class="wf-sub">● Saturday, 7 March 2026</div>
+          <div class="wf-stat-row">
+            <div class="wf-stat"><div class="n" style="color:var(--orange);font-size:10px">1</div><div class="l">New Requests</div></div>
+            <div class="wf-stat"><div class="n" style="color:var(--green);font-size:10px">1</div><div class="l">Completed</div></div>
+            <div class="wf-stat"><div class="n" style="color:var(--blue);font-size:10px">95</div><div class="l">kg Collected</div></div>
+          </div>
+          <div class="wf-card">
+            <div class="wf-card-hd">📋 INCOMING REQUESTS</div>
+            <div class="wf-li">
+              <div class="wf-li-body">
+                <div class="wf-li-t">R-102 · Dallah Hospital</div>
+                <div class="wf-li-s">Est. 60kg · Mixed Organic</div>
+              </div>
+              <div class="wf-tag wf-tag-y">Pending</div>
+            </div>
+            <div class="wf-li">
+              <div class="wf-li-body">
+                <div class="wf-li-t">R-101 · Dallah Hospital</div>
+                <div class="wf-li-s">Est. 40kg · Organic</div>
+              </div>
+              <div class="wf-tag wf-tag-g">Approved</div>
+            </div>
+          </div>
+          <div class="wf-btn-p" style="font-size:7px">View All Pickups →</div>
+          <div class="wf-bnav">
+            <div class="wf-ni active"><div class="icon"></div><div class="lbl">Dashboard</div></div>
+            <div class="wf-ni"><div class="icon"></div><div class="lbl">Pickups</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="phone-label">S-05 · PARTNER DASHBOARD</div>
+    </div>
+
+    <!-- Admin Dashboard -->
+    <div>
+      <div class="phone">
+        <div class="phone-notch"></div>
+        <div class="phone-screen">
+          <div class="wf-topbar">
+            <div style="display:flex;align-items:center"><div class="logo-box"></div><span class="logo-text">RePlate</span><span class="badge-role">ADMIN</span></div>
+            <div class="av">AD</div>
+          </div>
+          <div class="wf-h1">System Overview ⚙️</div>
+          <div class="wf-sub">● Saturday, 7 March 2026</div>
+          <div class="wf-stat-row">
+            <div class="wf-stat"><div class="n" style="color:var(--green);font-size:10px">4</div><div class="l">Active Users</div></div>
+            <div class="wf-stat"><div class="n" style="color:var(--orange);font-size:10px">3</div><div class="l">Partners</div></div>
+            <div class="wf-stat"><div class="n" style="color:var(--blue);font-size:10px">11</div><div class="l">Entries</div></div>
+          </div>
+          <div class="wf-card">
+            <div class="wf-card-hd">⚠️ ALERTS</div>
+            <div class="wf-alert wf-alert-r">🔴 Ward B — High waste threshold</div>
+            <div class="wf-alert wf-alert-g">🟢 Server healthy · 99.9% uptime</div>
+            <div class="wf-alert wf-alert-g">🟢 Last backup today at 02:00 AM</div>
+          </div>
+          <div class="wf-card">
+            <div class="wf-card-hd">🔒 SYSTEM HEALTH</div>
+            <div class="wf-li"><div class="wf-li-body"><div class="wf-li-t">Server Uptime</div></div><div class="wf-tag wf-tag-g">99.9%</div></div>
+            <div class="wf-li"><div class="wf-li-body"><div class="wf-li-t">SSL Cert</div></div><div class="wf-tag wf-tag-g">Valid</div></div>
+          </div>
+          <div class="wf-bnav">
+            <div class="wf-ni active"><div class="icon"></div><div class="lbl">Dashboard</div></div>
+            <div class="wf-ni"><div class="icon"></div><div class="lbl">Reports</div></div>
+            <div class="wf-ni"><div class="icon"></div><div class="lbl">Partner</div></div>
+            <div class="wf-ni"><div class="icon"></div><div class="lbl">Admin</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="phone-label">S-06 · ADMIN DASHBOARD</div>
+    </div>
+  </div>
+
+  <!-- Dashboard component breakdown -->
+  <div class="mt-24">
+    <h3 style="font-size:14px;font-weight:700;margin-bottom:14px">Dashboard — Component Breakdown</h3>
+    <table class="spec-table">
+      <thead><tr><th>Component</th><th>Staff</th><th>Manager</th><th>Partner</th><th>Admin</th><th>Data Source</th></tr></thead>
+      <tbody>
+        <tr><td>Greeting / Page title</td><td>✅ Time-based greeting</td><td>✅ "Manager Dashboard"</td><td>✅ "Partner Overview"</td><td>✅ "System Overview"</td><td>Client-side time</td></tr>
+        <tr><td>Live date + indicator</td><td>✅</td><td>✅ with live dot</td><td>✅ with live dot</td><td>✅ with live dot</td><td>System date</td></tr>
+        <tr><td>KPI Stat Boxes (×3)</td><td>kg Today / My Entries / Pending</td><td>kg Today / Entries / Pickups</td><td>New Requests / Completed / kg Collected</td><td>Active Users / Partners / Total Entries</td><td>Shared DB</td></tr>
+        <tr><td>Weekly Trend Chart</td><td>❌</td><td>✅</td><td>❌</td><td>❌ (in Reports)</td><td>entries[] filtered by date</td></tr>
+        <tr><td>Active Alerts</td><td>❌</td><td>✅ Threshold + system</td><td>❌</td><td>✅ Full system alerts</td><td>Computed from DB</td></tr>
+        <tr><td>Recent Entries List</td><td>✅ My entries</td><td>✅ All entries</td><td>❌</td><td>❌</td><td>entries[] sorted by id</td></tr>
+        <tr><td>Pickup Request List</td><td>❌</td><td>❌</td><td>✅</td><td>❌</td><td>pickups[]</td></tr>
+        <tr><td>Quick Action Buttons</td><td>✅ Log + Pickup</td><td>✅ View Reports</td><td>✅ View All Pickups</td><td>❌</td><td>Navigate action</td></tr>
+        <tr><td>System Health Panel</td><td>❌</td><td>❌</td><td>❌</td><td>✅</td><td>Static + computed</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ═══════════════════════ SECTION 05 — FUNCTIONAL SCREENS ═══════════════════════ -->
+<div class="section-divider">
+  <span class="num">05</span>
+  <span class="title">Core Functional Screens</span>
+  <span class="desc">S-07 Log Waste · S-08 Reports · S-09/10 Partner · S-11 Admin</span>
+</div>
+
+<div class="page">
+  <div class="page-header">
+    <div>
+      <span class="section-tag">SECTION 05 / CORE SCREENS</span>
+      <div class="page-title">Log Waste — 2-Step Form</div>
+      <div class="page-desc">Guided 2-step form to minimize errors and cognitive load. Step 1 captures what & how much. Step 2 captures why & next action.</div>
+    </div>
+    <div class="page-num">P.05</div>
+  </div>
+
+  <div class="screens-row">
+
+    <!-- Step 1 -->
+    <div>
+      <div class="phone">
+        <div class="phone-notch"></div>
+        <div class="phone-screen">
+          <div class="wf-topbar">
+            <div style="display:flex;align-items:center"><div class="logo-box"></div><span class="logo-text">RePlate</span><span class="badge-role">STAFF</span></div>
+            <div class="av">KS</div>
+          </div>
+          <div class="wf-h1">Log Food Waste</div>
+          <div class="wf-sub">Kitchen A · 07/03/2026 · 09:14</div>
+          <div class="wf-steps">
+            <div class="wf-step-dot active">1</div>
+            <div class="wf-step-line pending"></div>
+            <div class="wf-step-dot pending">2</div>
+            <div class="wf-step-line pending"></div>
+            <div class="wf-step-dot pending">✓</div>
+          </div>
+          <div class="wf-card">
+            <div class="wf-card-hd">Step 1 — Waste Details</div>
+            <div class="wf-2col">
+              <div><span class="wf-label">Department *</span>
+                <div class="wf-select"><span>Kitchen A</span><span>▾</span></div></div>
+              <div><span class="wf-label">Date & Time</span>
+                <div class="wf-input" style="background:#F5F2EC">Auto-filled</div></div>
+            </div>
+            <div class="wf-2col">
+              <div><span class="wf-label">Category *</span>
+                <div class="wf-select" style="border-color:var(--green)"><span>🍖 Meat / Protein</span><span>▾</span></div></div>
+              <div><span class="wf-label">Amount (kg) *</span>
+                <div class="wf-input" style="border-color:var(--green)">20</div></div>
+            </div>
+            <span class="wf-label">Stage of Generation</span>
+            <div class="wf-select"><span>Production (cooking surplus)</span><span>▾</span></div>
+          </div>
+          <div class="wf-btn-p">Continue →</div>
+          <div class="wf-bnav">
+            <div class="wf-ni"><div class="icon"></div><div class="lbl">Dashboard</div></div>
+            <div class="wf-ni active"><div class="icon"></div><div class="lbl">Log</div></div>
+            <div class="wf-ni"><div class="icon"></div><div class="lbl">Reports</div></div>
+            <div class="wf-ni"><div class="icon"></div><div class="lbl">Partner</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="phone-label">S-07a · LOG WASTE STEP 1</div>
+    </div>
+
+    <!-- Step 2 -->
+    <div>
+      <div class="phone">
+        <div class="phone-notch"></div>
+        <div class="phone-screen">
+          <div class="wf-topbar">
+            <div style="display:flex;align-items:center"><div class="logo-box"></div><span class="logo-text">RePlate</span><span class="badge-role">STAFF</span></div>
+            <div class="av">KS</div>
+          </div>
+          <div class="wf-h1">Log Food Waste</div>
+          <div class="wf-sub">Kitchen A · 07/03/2026 · 09:14</div>
+          <div class="wf-steps">
+            <div class="wf-step-dot done">✓</div>
+            <div class="wf-step-line done"></div>
+            <div class="wf-step-dot active">2</div>
+            <div class="wf-step-line pending"></div>
+            <div class="wf-step-dot pending">✓</div>
+          </div>
+          <div class="wf-card">
+            <div class="wf-card-hd">Step 2 — Reason & Notes</div>
+            <span class="wf-label">Primary Reason</span>
+            <div class="wf-select"><span>Overproduction</span><span>▾</span></div>
+            <span class="wf-label">Notes (optional)</span>
+            <div style="width:100%;background:#fff;border:1px solid #DDD8CE;border-radius:4px;padding:4px 6px;font-size:6px;color:var(--muted);min-height:28px;margin-bottom:4px">Unexpected shortage of patients in afternoon shift…</div>
+            <span class="wf-label">Request partner pickup?</span>
+            <div class="wf-btn-2">
+              <div style="background:var(--green);color:#fff;border-radius:4px;padding:4px;font-size:6px;text-align:center;font-weight:600">✓ Yes — Request pickup</div>
+              <div style="border:1px solid #DDD8CE;border-radius:4px;padding:4px;font-size:6px;text-align:center">✗ Internal disposal</div>
+            </div>
+          </div>
+          <div class="wf-btn-2">
+            <div class="wf-btn-o" style="font-size:6px">← Back</div>
+            <div class="wf-btn-p" style="font-size:6px">Submit ✓</div>
+          </div>
+          <div class="wf-bnav">
+            <div class="wf-ni"><div class="icon"></div><div class="lbl">Dashboard</div></div>
+            <div class="wf-ni active"><div class="icon"></div><div class="lbl">Log</div></div>
+            <div class="wf-ni"><div class="icon"></div><div class="lbl">Reports</div></div>
+            <div class="wf-ni"><div class="icon"></div><div class="lbl">Partner</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="phone-label">S-07b · LOG WASTE STEP 2</div>
+    </div>
+
+    <!-- Success -->
+    <div>
+      <div class="phone">
+        <div class="phone-notch"></div>
+        <div class="phone-screen">
+          <div class="wf-topbar">
+            <div style="display:flex;align-items:center"><div class="logo-box"></div><span class="logo-text">RePlate</span><span class="badge-role">STAFF</span></div>
+            <div class="av">KS</div>
+          </div>
+          <div style="text-align:center;padding:20px 8px 10px">
+            <div style="width:42px;height:42px;background:var(--green-lt);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 8px;font-size:20px">✅</div>
+            <div style="font-size:10px;font-weight:700;margin-bottom:4px">Waste Logged!</div>
+            <div style="font-size:6.5px;color:var(--muted);line-height:1.6"><strong>20 kg</strong> Meat / Protein from <strong>Kitchen A</strong> recorded at 09:14. Pickup request sent to GreenCo.</div>
+          </div>
+          <div class="wf-card">
+            <div class="wf-card-hd">ENTRY SUMMARY</div>
+            <div class="wf-li"><div class="wf-li-body"><div class="wf-li-t">Department</div></div><div style="font-size:6.5px;font-weight:600">Kitchen A</div></div>
+            <div class="wf-li"><div class="wf-li-body"><div class="wf-li-t">Category</div></div><div style="font-size:6.5px;font-weight:600">Meat / Protein</div></div>
+            <div class="wf-li"><div class="wf-li-body"><div class="wf-li-t">Amount</div></div><div style="font-size:6.5px;font-weight:600">20 kg</div></div>
+            <div class="wf-li"><div class="wf-li-body"><div class="wf-li-t">Stage</div></div><div style="font-size:6.5px;font-weight:600">Production</div></div>
+            <div class="wf-li"><div class="wf-li-body"><div class="wf-li-t">Reason</div></div><div style="font-size:6.5px;font-weight:600">Overproduction</div></div>
+          </div>
+          <div class="wf-btn-p">＋ Log Another Entry</div>
+          <div class="wf-bnav">
+            <div class="wf-ni"><div class="icon"></div><div class="lbl">Dashboard</div></div>
+            <div class="wf-ni active"><div class="icon"></div><div class="lbl">Log</div></div>
+            <div class="wf-ni"><div class="icon"></div><div class="lbl">Reports</div></div>
+            <div class="wf-ni"><div class="icon"></div><div class="lbl">Partner</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="phone-label">S-12 · LOG SUCCESS</div>
+    </div>
+
+    <!-- Annotations -->
+    <div class="annotations-col" style="max-width:240px">
+      <h3 style="font-size:13px;font-weight:700;margin-bottom:16px">Log Waste Notes</h3>
+      <div class="callout">
+        <div class="callout-num">1</div>
+        <div class="callout-body"><strong>Auto-fill Date & Time</strong><p>System auto-fills current date and time — staff don't need to enter it. Reduces errors by 40%+.</p></div>
+      </div>
+      <div class="callout">
+        <div class="callout-num">2</div>
+        <div class="callout-body"><strong>Required Field Validation</strong><p>Category and Amount are marked with red asterisk (*). Form won't advance without them.</p></div>
+      </div>
+      <div class="callout">
+        <div class="callout-num">3</div>
+        <div class="callout-body"><strong>Pickup Toggle</strong><p>One-tap to request partner pickup alongside the waste log. Saves a separate navigation step.</p></div>
+      </div>
+      <div class="callout">
+        <div class="callout-num">4</div>
+        <div class="callout-body"><strong>Success Summary</strong><p>Confirmation screen shows full entry summary. Reduces re-entry errors and gives staff confidence.</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Reports + Partner + Admin -->
+<div class="page">
+  <div class="page-header">
+    <div>
+      <span class="section-tag">SECTION 05 / CORE SCREENS (CONTINUED)</span>
+      <div class="page-title">Reports, Partner & Admin</div>
+    </div>
+    <div class="page-num">P.06</div>
+  </div>
+
+  <div class="screens-row">
+
+    <!-- Reports -->
+    <div>
+      <div class="phone">
+        <div class="phone-notch"></div>
+        <div class="phone-screen">
+          <div class="wf-topbar">
+            <div style="display:flex;align-items:center"><div class="logo-box"></div><span class="logo-text">RePlate</span><span class="badge-role">MANAGER</span></div>
+            <div class="av">AM</div>
+          </div>
+          <div class="wf-h1">Reports</div>
+          <div class="wf-sub">Analytical waste data & compliance exports</div>
+          <!-- Filters -->
+          <div class="wf-card">
+            <div class="wf-card-hd">FILTERS</div>
+            <div class="wf-2col">
+              <div><span class="wf-label">Date Range</span>
+                <div class="wf-select" style="border-color:var(--green)"><span>This Week</span><span>▾</span></div></div>
+              <div><span class="wf-label">Department</span>
+                <div class="wf-select"><span>All</span><span>▾</span></div></div>
+            </div>
+            <span class="wf-label">Category</span>
+            <div class="wf-select"><span>All</span><span>▾</span></div>
+          </div>
+          <!-- Stats -->
+          <div class="wf-stat-row">
+            <div class="wf-stat"><div class="n" style="color:var(--red);font-size:9px">149</div><div class="l">Total kg</div></div>
+            <div class="wf-stat"><div class="n" style="font-size:7px;color:var(--muted)">Kitchen A</div><div class="l">Top Dept</div></div>
+            <div class="wf-stat"><div class="n" style="font-size:7px;color:var(--muted)">Meat</div><div class="l">Top Cat.</div></div>
+          </div>
+          <!-- Mini table -->
+          <div class="wf-card">
+            <div class="wf-card-hd">WASTE LOG TABLE</div>
+            <table class="wf-table">
+              <tr><th>Date</th><th>Dept</th><th>Cat</th><th>kg</th></tr>
+              <tr><td>03-07</td><td>K.A</td><td>Meat</td><td><strong>20</strong></td></tr>
+              <tr><td>03-07</td><td>W.B</td><td>Plate</td><td><strong>15</strong></td></tr>
+              <tr><td>03-06</td><td>Storage</td><td>Rice</td><td><strong>10</strong></td></tr>
+            </table>
+          </div>
+          <div class="wf-btn-2">
+            <div class="wf-btn-p" style="font-size:6px">⬇ Export CSV</div>
+            <div class="wf-btn-o" style="font-size:6px">🖨️ Print</div>
+          </div>
+          <div class="wf-bnav">
+            <div class="wf-ni"><div class="icon"></div><div class="lbl">Dashboard</div></div>
+            <div class="wf-ni active"><div class="icon"></div><div class="lbl">Reports</div></div>
+            <div class="wf-ni"><div class="icon"></div><div class="lbl">Partner</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="phone-label">S-08 · REPORTS</div>
+    </div>
+
+    <!-- Partner Hospital View -->
+    <div>
+      <div class="phone">
+        <div class="phone-notch"></div>
+        <div class="phone-screen">
+          <div class="wf-topbar">
+            <div style="display:flex;align-items:center"><div class="logo-box"></div><span class="logo-text">RePlate</span><span class="badge-role">STAFF</span></div>
+            <div class="av">KS</div>
+          </div>
+          <div class="wf-h1">Partner Coordination</div>
+          <div class="wf-sub">Manage pickups with waste partners</div>
+          <div class="wf-card">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+              <div class="wf-h2" style="margin:0">Pickup Requests</div>
+              <div class="wf-tag wf-tag-g" style="padding:2px 7px;font-size:6px;cursor:pointer">＋ New</div>
+            </div>
+            <div class="wf-li">
+              <div class="wf-li-ic">🚛</div>
+              <div class="wf-li-body"><div class="wf-li-t">R-102 · GreenCo</div><div class="wf-li-s">Est. 60kg · Mixed Organic</div></div>
+              <div class="wf-tag wf-tag-y">Pending</div>
+            </div>
+            <div class="wf-li">
+              <div class="wf-li-ic">🚛</div>
+              <div class="wf-li-body"><div class="wf-li-t">R-101 · GreenCo</div><div class="wf-li-s">Est. 40kg · Organic</div></div>
+              <div class="wf-tag wf-tag-g">Approved</div>
+            </div>
+            <div class="wf-li">
+              <div class="wf-li-ic">🚛</div>
+              <div class="wf-li-body"><div class="wf-li-t">R-100 · EcoWaste</div><div class="wf-li-s">Est. 55kg · Compost</div></div>
+              <div class="wf-tag wf-tag-g">Completed</div>
+            </div>
+          </div>
+          <div class="wf-card">
+            <div class="wf-card-hd">📣 NOTIFICATIONS</div>
+            <div class="wf-alert wf-alert-g">🟢 GreenCo last notified — awaiting confirmation</div>
+            <div class="wf-btn-2">
+              <div class="wf-btn-o" style="font-size:6px">Send Reminder</div>
+              <div class="wf-btn-o" style="font-size:6px;color:var(--red);border-color:var(--red)">Cancel Pending</div>
+            </div>
+          </div>
+          <div class="wf-bnav">
+            <div class="wf-ni"><div class="icon"></div><div class="lbl">Dashboard</div></div>
+            <div class="wf-ni"><div class="icon"></div><div class="lbl">Log</div></div>
+            <div class="wf-ni"><div class="icon"></div><div class="lbl">Reports</div></div>
+            <div class="wf-ni active"><div class="icon"></div><div class="lbl">Partner</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="phone-label">S-09 · PARTNER (HOSPITAL VIEW)</div>
+    </div>
+
+    <!-- Partner Org View -->
+    <div>
+      <div class="phone">
+        <div class="phone-notch"></div>
+        <div class="phone-screen">
+          <div class="wf-topbar">
+            <div style="display:flex;align-items:center"><div class="logo-box"></div><span class="logo-text">RePlate</span><span class="badge-role">PARTNER</span></div>
+            <div class="av">FA</div>
+          </div>
+          <div class="wf-h1">Pickup Requests</div>
+          <div class="wf-sub">View & update hospital pickup requests</div>
+          <div class="wf-card">
+            <div class="wf-card-hd">INCOMING — DALLAH HOSPITAL</div>
+            <!-- Pending -->
+            <div style="padding:7px 0;border-bottom:1px solid #F0EDE8">
+              <div style="display:flex;justify-content:space-between;margin-bottom:3px">
+                <div style="font-size:7px;font-weight:700">R-102 · Dallah Hospital</div>
+                <div class="wf-tag wf-tag-y">Pending</div>
+              </div>
+              <div style="font-size:5.5px;color:var(--muted);margin-bottom:5px">Est. 60 kg · Mixed Organic · Today</div>
+              <div class="wf-btn-2">
+                <div style="background:var(--green);color:#fff;border-radius:3px;padding:3px;font-size:6px;text-align:center;font-weight:600">✓ Accept</div>
+                <div style="border:1px solid #DDD8CE;border-radius:3px;padding:3px;font-size:6px;text-align:center">✗ Decline</div>
+              </div>
+            </div>
+            <!-- Approved -->
+            <div style="padding:7px 0;border-bottom:1px solid #F0EDE8">
+              <div style="display:flex;justify-content:space-between;margin-bottom:3px">
+                <div style="font-size:7px;font-weight:700">R-101 · Dallah Hospital</div>
+                <div class="wf-tag wf-tag-g">Approved</div>
+              </div>
+              <div style="font-size:5.5px;color:var(--muted);margin-bottom:5px">Est. 40 kg · Organic · Yesterday</div>
+              <div style="background:var(--green);color:#fff;border-radius:3px;padding:3px;font-size:6px;text-align:center;font-weight:600">🚛 Mark En Route</div>
+            </div>
+          </div>
+          <div class="wf-card">
+            <div class="wf-card-hd">♻️ WASTE CLASSIFICATION</div>
+            <div class="wf-li"><div class="wf-li-ic">🍖</div><div class="wf-li-body"><div class="wf-li-t">Meat Waste · 20kg</div></div><div class="wf-tag wf-tag-g">Compost</div></div>
+            <div class="wf-li"><div class="wf-li-ic">🍽️</div><div class="wf-li-body"><div class="wf-li-t">Plate Waste · 40kg</div></div><div class="wf-tag wf-tag-o">Processing</div></div>
+          </div>
+          <div class="wf-bnav">
+            <div class="wf-ni"><div class="icon"></div><div class="lbl">Dashboard</div></div>
+            <div class="wf-ni active"><div class="icon"></div><div class="lbl">Pickups</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="phone-label">S-10 · PARTNER ORG VIEW</div>
+    </div>
+
+    <!-- Admin Panel -->
+    <div>
+      <div class="phone">
+        <div class="phone-notch"></div>
+        <div class="phone-screen">
+          <div class="wf-topbar">
+            <div style="display:flex;align-items:center"><div class="logo-box"></div><span class="logo-text">RePlate</span><span class="badge-role">ADMIN</span></div>
+            <div class="av">AD</div>
+          </div>
+          <div class="wf-h1">Admin Panel</div>
+          <div class="wf-sub">User management & system settings</div>
+          <div class="wf-card">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+              <div class="wf-h2" style="margin:0">User Management</div>
+              <div class="wf-tag wf-tag-g" style="padding:2px 7px;font-size:6px">＋ Add User</div>
+            </div>
+            <table class="wf-table">
+              <tr><th>Name</th><th>Role</th><th>Status</th><th></th></tr>
+              <tr><td>Sara K.</td><td><div class="wf-tag wf-tag-g">Staff</div></td><td style="color:var(--green)">Active</td><td style="color:var(--muted)">Edit</td></tr>
+              <tr><td>Ahmed M.</td><td><div class="wf-tag wf-tag-b">Mgr</div></td><td style="color:var(--green)">Active</td><td style="color:var(--muted)">Edit</td></tr>
+              <tr><td>Faisal A.</td><td><div class="wf-tag wf-tag-o">Partner</div></td><td style="color:var(--green)">Active</td><td style="color:var(--muted)">Edit</td></tr>
+            </table>
+          </div>
+          <div class="wf-card">
+            <div class="wf-card-hd">SYSTEM SETTINGS</div>
+            <div class="wf-switch-row">
+              <div style="font-size:6.5px;font-weight:500">Real-time notifications</div>
+              <div class="wf-sw wf-sw-on"><div class="wf-sw-thumb" style="left:9px"></div></div>
+            </div>
+            <div class="wf-switch-row">
+              <div style="font-size:6.5px;font-weight:500">Auto partner notification</div>
+              <div class="wf-sw wf-sw-on"><div class="wf-sw-thumb" style="left:9px"></div></div>
+            </div>
+            <div class="wf-switch-row">
+              <div style="font-size:6.5px;font-weight:500">Daily backup (02:00 AM)</div>
+              <div class="wf-sw wf-sw-on"><div class="wf-sw-thumb" style="left:9px"></div></div>
+            </div>
+            <div class="wf-switch-row">
+              <div style="font-size:6.5px;font-weight:500">Audit log tracking</div>
+              <div class="wf-sw wf-sw-off"><div class="wf-sw-thumb" style="left:1px"></div></div>
+            </div>
+          </div>
+          <div class="wf-bnav">
+            <div class="wf-ni"><div class="icon"></div><div class="lbl">Dashboard</div></div>
+            <div class="wf-ni"><div class="icon"></div><div class="lbl">Reports</div></div>
+            <div class="wf-ni"><div class="icon"></div><div class="lbl">Partner</div></div>
+            <div class="wf-ni active"><div class="icon"></div><div class="lbl">Admin</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="phone-label">S-11 · ADMIN PANEL</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════ SECTION 06 — STORYBOARDS ═══════════════════════ -->
+<div class="section-divider">
+  <span class="num">06</span>
+  <span class="title">Storyboard Flows</span>
+  <span class="desc">3 key user journeys mapped screen-by-screen</span>
+</div>
+
+<div class="page">
+  <div class="page-header">
+    <div>
+      <span class="section-tag">SECTION 06 / STORYBOARDS</span>
+      <div class="page-title">Storyboard 1 — Logging Waste</div>
+      <div class="page-desc">Faisal (Kitchen Staff) logs overproduction from the morning prep session and requests a partner pickup.</div>
+    </div>
+    <div class="page-num">P.07</div>
+  </div>
+
+  <div style="display:flex;gap:16px;flex-wrap:wrap;justify-content:center">
+    <!-- Step cards for storyboard -->
+    <style>
+    .sb-step { background: var(--white); border: 1px solid var(--line); border-radius: 12px; width: 160px; overflow: hidden; }
+    .sb-step-num { background: var(--ink); color: #fff; padding: 6px 12px; font-family: 'IBM Plex Mono', monospace; font-size: 9px; display: flex; justify-content: space-between; }
+    .sb-step-screen { padding: 8px; min-height: 90px; }
+    .sb-step-caption { padding: 8px 12px; border-top: 1px solid var(--line); font-size: 10px; color: var(--muted); line-height: 1.5; }
+    .sb-arrow { display: flex; align-items: center; color: var(--muted); font-size: 18px; align-self: center; margin-top: -20px; }
+    </style>
+
+    <div class="sb-step">
+      <div class="sb-step-num"><span>STEP 1</span><span>Role Select</span></div>
+      <div class="sb-step-screen">
+        <div class="wf-role-grid" style="gap:3px">
+          <div class="wf-role-card" style="padding:5px;border-color:var(--green);background:var(--green-lt)"><div style="font-size:8px">🍳</div><div style="font-size:5px;font-weight:700;color:var(--green)">Kitchen Staff</div></div>
+          <div class="wf-role-card" style="padding:5px"><div style="font-size:8px">📊</div><div style="font-size:5px;font-weight:700">Manager</div></div>
+        </div>
+      </div>
+      <div class="sb-step-caption">Faisal opens app and selects "Kitchen Staff"</div>
+    </div>
+
+    <div class="sb-arrow">→</div>
+
+    <div class="sb-step">
+      <div class="sb-step-num"><span>STEP 2</span><span>Login</span></div>
+      <div class="sb-step-screen">
+        <div class="wf-card" style="padding:6px">
+          <div class="wf-input" style="margin:3px 0;font-size:6px">faisal@dallah.sa</div>
+          <div class="wf-input" style="margin:3px 0;font-size:6px;color:#CCC">••••••••</div>
+          <div class="wf-btn-p" style="font-size:6px">Login →</div>
+        </div>
+      </div>
+      <div class="sb-step-caption">Enters his email & password (no pre-fill)</div>
+    </div>
+
+    <div class="sb-arrow">→</div>
+
+    <div class="sb-step">
+      <div class="sb-step-num"><span>STEP 3</span><span>Dashboard</span></div>
+      <div class="sb-step-screen">
+        <div class="wf-stat-row" style="gap:3px">
+          <div class="wf-stat"><div class="n" style="color:var(--orange);font-size:9px">35</div><div class="l">kg</div></div>
+          <div class="wf-stat"><div class="n" style="color:var(--green);font-size:9px">2</div><div class="l">Entries</div></div>
+          <div class="wf-stat"><div class="n" style="font-size:9px">1</div><div class="l">Pickups</div></div>
+        </div>
+        <div class="wf-btn-p" style="font-size:6px;margin-top:4px">＋ Log Waste</div>
+      </div>
+      <div class="sb-step-caption">Sees today's stats and taps "Log Waste"</div>
+    </div>
+
+    <div class="sb-arrow">→</div>
+
+    <div class="sb-step">
+      <div class="sb-step-num"><span>STEP 4</span><span>Log Step 1</span></div>
+      <div class="sb-step-screen">
+        <div class="wf-2col" style="gap:3px">
+          <div><div class="wf-select" style="font-size:5.5px;margin-bottom:3px;border-color:var(--green)">Kitchen A ▾</div></div>
+          <div><div class="wf-input" style="font-size:5.5px;margin-bottom:3px;border-color:var(--green)">20 kg</div></div>
+        </div>
+        <div class="wf-select" style="font-size:5.5px;border-color:var(--green)">🍖 Meat / Protein ▾</div>
+      </div>
+      <div class="sb-step-caption">Selects dept, enters 20kg, picks Meat category</div>
+    </div>
+
+    <div class="sb-arrow">→</div>
+
+    <div class="sb-step">
+      <div class="sb-step-num"><span>STEP 5</span><span>Log Step 2</span></div>
+      <div class="sb-step-screen">
+        <div class="wf-select" style="font-size:5.5px;margin-bottom:3px">Overproduction ▾</div>
+        <div class="wf-btn-2" style="margin-top:3px">
+          <div style="background:var(--green);color:#fff;border-radius:3px;padding:3px;font-size:5.5px;text-align:center">✓ Request Pickup</div>
+          <div style="border:1px solid #DDD8CE;border-radius:3px;padding:3px;font-size:5.5px;text-align:center">✗ Internal</div>
+        </div>
+      </div>
+      <div class="sb-step-caption">Selects "Overproduction", toggles pickup request on</div>
+    </div>
+
+    <div class="sb-arrow">→</div>
+
+    <div class="sb-step">
+      <div class="sb-step-num"><span>STEP 6</span><span>Success</span></div>
+      <div class="sb-step-screen" style="display:flex;flex-direction:column;align-items:center;justify-content:center">
+        <div style="font-size:28px">✅</div>
+        <div style="font-size:7px;font-weight:700;margin-top:4px;color:var(--green)">Waste Logged!</div>
+        <div style="font-size:5.5px;color:var(--muted);text-align:center;margin-top:3px">Pickup sent to GreenCo</div>
+      </div>
+      <div class="sb-step-caption">Entry saved + pickup auto-sent to partner</div>
+    </div>
+  </div>
+
+  <!-- Storyboard 2 -->
+  <div class="mt-32">
+    <h3 style="font-size:16px;font-weight:700;margin-bottom:4px">Storyboard 2 — Manager Viewing Dashboard</h3>
+    <p style="font-size:12px;color:var(--muted);margin-bottom:20px">Dr. Lina (Manager) reviews the weekly trend and notices Ward B is exceeding the waste threshold.</p>
+    <div style="display:flex;gap:16px;flex-wrap:wrap;justify-content:center">
+
+      <div class="sb-step">
+        <div class="sb-step-num"><span>STEP 1</span><span>Login</span></div>
+        <div class="sb-step-screen">
+          <div class="wf-card" style="padding:6px">
+            <div class="wf-input" style="font-size:6px">lina@dallah.sa</div>
+            <div class="wf-input" style="font-size:6px;color:#CCC">••••••••</div>
+            <div class="wf-btn-p" style="font-size:6px">Login →</div>
+          </div>
+        </div>
+        <div class="sb-step-caption">Manager role selected, credentials entered</div>
+      </div>
+
+      <div class="sb-arrow">→</div>
+
+      <div class="sb-step">
+        <div class="sb-step-num"><span>STEP 2</span><span>Dashboard</span></div>
+        <div class="sb-step-screen">
+          <div class="wf-chart" style="height:24px;margin-bottom:3px">
+            <div class="wf-bar" style="height:60%;background:var(--green);opacity:.7"></div>
+            <div class="wf-bar" style="height:35%;background:var(--green);opacity:.7"></div>
+            <div class="wf-bar" style="height:50%;background:var(--green);opacity:.7"></div>
+            <div class="wf-bar" style="height:48%;background:var(--green);opacity:.7"></div>
+            <div class="wf-bar" style="height:55%;background:var(--green);opacity:.7"></div>
+            <div class="wf-bar" style="height:52%;background:var(--green);opacity:.7"></div>
+            <div class="wf-bar" style="height:100%;background:var(--orange);opacity:.8"></div>
+          </div>
+          <div class="wf-alert wf-alert-r" style="font-size:5.5px;padding:3px">🔴 Ward B — High waste</div>
+        </div>
+        <div class="sb-step-caption">Spots Ward B alert + Saturday spike in chart</div>
+      </div>
+
+      <div class="sb-arrow">→</div>
+
+      <div class="sb-step">
+        <div class="sb-step-num"><span>STEP 3</span><span>Reports</span></div>
+        <div class="sb-step-screen">
+          <div class="wf-card" style="padding:6px">
+            <div class="wf-select" style="font-size:5.5px;margin-bottom:3px;border-color:var(--green)">This Week ▾</div>
+            <div class="wf-select" style="font-size:5.5px;margin-bottom:3px;border-color:var(--green)">Ward B ▾</div>
+          </div>
+        </div>
+        <div class="sb-step-caption">Navigates to Reports, filters by Ward B</div>
+      </div>
+
+      <div class="sb-arrow">→</div>
+
+      <div class="sb-step">
+        <div class="sb-step-num"><span>STEP 4</span><span>Analysis</span></div>
+        <div class="sb-step-screen">
+          <div class="wf-stat-row" style="gap:3px">
+            <div class="wf-stat"><div class="n" style="color:var(--red);font-size:9px">40</div><div class="l">kg Ward B</div></div>
+            <div class="wf-stat"><div class="n" style="font-size:9px">3</div><div class="l">Entries</div></div>
+          </div>
+        </div>
+        <div class="sb-step-caption">Sees 40kg in Ward B — above 25kg threshold</div>
+      </div>
+
+      <div class="sb-arrow">→</div>
+
+      <div class="sb-step">
+        <div class="sb-step-num"><span>STEP 5</span><span>Export</span></div>
+        <div class="sb-step-screen" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px">
+          <div class="wf-btn-p" style="font-size:6px;width:90%;text-align:center">⬇ Export CSV</div>
+          <div class="wf-btn-o" style="font-size:6px;width:90%;text-align:center">🖨️ Print Report</div>
+        </div>
+        <div class="sb-step-caption">Exports CSV for compliance audit submission</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Storyboard 3 -->
+  <div class="mt-32">
+    <h3 style="font-size:16px;font-weight:700;margin-bottom:4px">Storyboard 3 — Partner Accepting Pickup</h3>
+    <p style="font-size:12px;color:var(--muted);margin-bottom:20px">Ahmed (GreenCo Partner) receives a new pickup request, accepts it, and marks it as completed.</p>
+    <div style="display:flex;gap:16px;flex-wrap:wrap;justify-content:center">
+
+      <div class="sb-step">
+        <div class="sb-step-num"><span>STEP 1</span><span>Login</span></div>
+        <div class="sb-step-screen">
+          <div class="wf-card" style="padding:6px">
+            <div class="wf-input" style="font-size:6px">ahmed@greenco.sa</div>
+            <div class="wf-input" style="font-size:6px;color:#CCC">••••••••</div>
+            <div class="wf-btn-p" style="font-size:6px">Login →</div>
+          </div>
+        </div>
+        <div class="sb-step-caption">"Partner Org" role, enters GreenCo credentials</div>
+      </div>
+
+      <div class="sb-arrow">→</div>
+
+      <div class="sb-step">
+        <div class="sb-step-num"><span>STEP 2</span><span>Dashboard</span></div>
+        <div class="sb-step-screen">
+          <div class="wf-stat-row" style="gap:3px">
+            <div class="wf-stat"><div class="n" style="color:var(--orange);font-size:9px">1</div><div class="l">New</div></div>
+            <div class="wf-stat"><div class="n" style="color:var(--green);font-size:9px">1</div><div class="l">Done</div></div>
+          </div>
+          <div class="wf-alert wf-alert-y" style="font-size:5.5px;padding:3px;margin-top:4px">🟠 1 new request from Dallah</div>
+        </div>
+        <div class="sb-step-caption">Sees 1 new request on partner dashboard</div>
+      </div>
+
+      <div class="sb-arrow">→</div>
+
+      <div class="sb-step">
+        <div class="sb-step-num"><span>STEP 3</span><span>View Request</span></div>
+        <div class="sb-step-screen">
+          <div style="font-size:6.5px;font-weight:700;margin-bottom:2px">R-102 · Dallah Hospital</div>
+          <div style="font-size:5.5px;color:var(--muted)">60kg · Mixed Organic</div>
+          <div class="wf-btn-2" style="margin-top:5px">
+            <div style="background:var(--green);color:#fff;border-radius:3px;padding:3px;font-size:5.5px;text-align:center">✓ Accept</div>
+            <div style="border:1px solid #DDD8CE;border-radius:3px;padding:3px;font-size:5.5px;text-align:center">✗ Decline</div>
+          </div>
+        </div>
+        <div class="sb-step-caption">Reviews request details — 60kg Mixed Organic</div>
+      </div>
+
+      <div class="sb-arrow">→</div>
+
+      <div class="sb-step">
+        <div class="sb-step-num"><span>STEP 4</span><span>Accept</span></div>
+        <div class="sb-step-screen" style="display:flex;flex-direction:column;align-items:center;justify-content:center">
+          <div style="font-size:20px">✅</div>
+          <div style="font-size:6.5px;color:var(--green);font-weight:600;margin-top:4px">Request Accepted</div>
+          <div class="wf-tag wf-tag-g" style="margin-top:4px">Approved</div>
+        </div>
+        <div class="sb-step-caption">Taps Accept — hospital is notified</div>
+      </div>
+
+      <div class="sb-arrow">→</div>
+
+      <div class="sb-step">
+        <div class="sb-step-num"><span>STEP 5</span><span>Complete</span></div>
+        <div class="sb-step-screen" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px">
+          <div style="background:var(--green);color:#fff;border-radius:3px;padding:4px 8px;font-size:6px;font-weight:600">🚛 En Route</div>
+          <div style="background:var(--green);color:#fff;border-radius:3px;padding:4px 8px;font-size:6px;font-weight:600">✅ Mark Complete</div>
+        </div>
+        <div class="sb-step-caption">Updates status through En Route → Completed</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════ SECTION 07 — DESIGN SYSTEM ═══════════════════════ -->
+<div class="section-divider">
+  <span class="num">07</span>
+  <span class="title">Design System</span>
+  <span class="desc">Colors, typography, components & interaction specs</span>
+</div>
+
+<div class="page">
+  <div class="page-header">
+    <div>
+      <span class="section-tag">SECTION 07 / DESIGN SYSTEM</span>
+      <div class="page-title">Colors & Typography</div>
+    </div>
+    <div class="page-num">P.08</div>
+  </div>
+
+  <div class="two-col">
+    <div>
+      <h3 style="font-size:13px;font-weight:700;margin-bottom:16px">Color Palette</h3>
+      <div class="color-row" style="margin-bottom:20px">
+        <div class="color-swatch"><div class="color-block" style="background:#2A6348"></div><div class="color-name">Primary</div><div class="color-hex">#2A6348</div></div>
+        <div class="color-swatch"><div class="color-block" style="background:#E4F2EB"></div><div class="color-name">Primary Light</div><div class="color-hex">#E4F2EB</div></div>
+        <div class="color-swatch"><div class="color-block" style="background:#C4672F"></div><div class="color-name">Accent</div><div class="color-hex">#C4672F</div></div>
+        <div class="color-swatch"><div class="color-block" style="background:#FCEEE4"></div><div class="color-name">Accent Light</div><div class="color-hex">#FCEEE4</div></div>
+        <div class="color-swatch"><div class="color-block" style="background:#B83025"></div><div class="color-name">Error / Red</div><div class="color-hex">#B83025</div></div>
+        <div class="color-swatch"><div class="color-block" style="background:#2563EB"></div><div class="color-name">Info / Blue</div><div class="color-hex">#2563EB</div></div>
+      </div>
+      <div class="color-row">
+        <div class="color-swatch"><div class="color-block" style="background:#F2F0EA;border:1px solid #DDD8CE"></div><div class="color-name">Background</div><div class="color-hex">#F2F0EA</div></div>
+        <div class="color-swatch"><div class="color-block" style="background:#EDEBE5;border:1px solid #DDD8CE"></div><div class="color-name">Surface</div><div class="color-hex">#EDEBE5</div></div>
+        <div class="color-swatch"><div class="color-block" style="background:#DDD8CE"></div><div class="color-name">Border</div><div class="color-hex">#DDD8CE</div></div>
+        <div class="color-swatch"><div class="color-block" style="background:#78746A"></div><div class="color-name">Muted Text</div><div class="color-hex">#78746A</div></div>
+        <div class="color-swatch"><div class="color-block" style="background:#1A1814"></div><div class="color-name">Ink</div><div class="color-hex">#1A1814</div></div>
+        <div class="color-swatch"><div class="color-block" style="background:#FDFCFA;border:1px solid #DDD8CE"></div><div class="color-name">White</div><div class="color-hex">#FDFCFA</div></div>
+      </div>
+
+      <div class="mt-24">
+        <h3 style="font-size:13px;font-weight:700;margin-bottom:10px">Semantic Color Mapping</h3>
+        <table class="spec-table">
+          <thead><tr><th>Use Case</th><th>Color</th><th>Example</th></tr></thead>
+          <tbody>
+            <tr><td>Success / Active</td><td style="color:var(--green);font-weight:700">#2A6348 Green</td><td><span class="tag-doc tag-g">Approved</span></td></tr>
+            <tr><td>Warning / Pending</td><td style="color:#B07D10;font-weight:700">#B07D10 Yellow</td><td><span class="tag-doc" style="background:var(--yellow-lt);color:#B07D10">Pending</span></td></tr>
+            <tr><td>Danger / High Waste</td><td style="color:var(--red);font-weight:700">#B83025 Red</td><td><span class="tag-doc tag-r">Alert</span></td></tr>
+            <tr><td>Info / Status</td><td style="color:var(--blue);font-weight:700">#2563EB Blue</td><td><span class="tag-doc tag-b">kg Collected</span></td></tr>
+            <tr><td>Neutral / Inactive</td><td style="color:var(--muted);font-weight:700">#78746A Gray</td><td><span class="tag-doc tag-k">Inactive</span></td></tr>
+            <tr><td>Primary CTA</td><td style="color:var(--green);font-weight:700">#2A6348 Green</td><td><span style="background:var(--green);color:#fff;padding:2px 10px;border-radius:5px;font-size:10px">Login →</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div>
+      <h3 style="font-size:13px;font-weight:700;margin-bottom:16px">Typography Scale</h3>
+      <div style="background:var(--white);border:1px solid var(--line);border-radius:10px;padding:20px;margin-bottom:16px">
+        <div style="font-family:'Segoe UI',system-ui,sans-serif;font-size:26px;font-weight:700;letter-spacing:-1px;margin-bottom:4px;line-height:1.1">Page Titles — 19px/700</div>
+        <div style="font-family:'Segoe UI',system-ui,sans-serif;font-size:20px;font-weight:700;letter-spacing:-0.5px;margin-bottom:4px">Section Headings — 14px/600</div>
+        <div style="font-family:'Segoe UI',system-ui,sans-serif;font-size:15px;font-weight:400;color:var(--muted);margin-bottom:4px">Body / Descriptions — 12px/400</div>
+        <div style="font-family:monospace;font-size:12px;color:var(--muted);margin-bottom:4px">LABELS & BADGES — 9-10px/700</div>
+        <div style="font-family:'Segoe UI',sans-serif;font-size:12px;font-weight:600;color:var(--muted)">List Item Sub — 10px/400</div>
+      </div>
+
+      <h3 style="font-size:13px;font-weight:700;margin-bottom:10px">Spacing & Layout System</h3>
+      <table class="spec-table">
+        <thead><tr><th>Token</th><th>Value</th><th>Used For</th></tr></thead>
+        <tbody>
+          <tr><td>--radius-sm</td><td>8px</td><td>Inputs, small cards</td></tr>
+          <tr><td>--radius-md</td><td>13px</td><td>Cards, modals</td></tr>
+          <tr><td>--radius-lg</td><td>18px</td><td>Bottom sheet, phone frame</td></tr>
+          <tr><td>--pad-content</td><td>18px 16px</td><td>Main content area</td></tr>
+          <tr><td>--topbar-h</td><td>54px</td><td>Fixed top navigation</td></tr>
+          <tr><td>--bnav-h</td><td>62px</td><td>Fixed bottom navigation</td></tr>
+          <tr><td>--max-width</td><td>480px</td><td>Mobile frame max width</td></tr>
+          <tr><td>--gap-sm</td><td>8px</td><td>Tight element spacing</td></tr>
+          <tr><td>--gap-md</td><td>12px</td><td>Card spacing</td></tr>
+          <tr><td>--gap-lg</td><td>18px</td><td>Section spacing</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- Component Library -->
+<div class="page">
+  <div class="page-header">
+    <div>
+      <span class="section-tag">SECTION 07 / DESIGN SYSTEM (CONTINUED)</span>
+      <div class="page-title">Component Library</div>
+    </div>
+    <div class="page-num">P.09</div>
+  </div>
+
+  <div class="comp-grid">
+    <!-- Tags -->
+    <div class="comp-item">
+      <div class="comp-label">STATUS TAGS</div>
+      <div class="comp-preview">
+        <span class="tag-doc tag-g">Approved</span>
+        <span class="tag-doc tag-r">Alert</span>
+        <span class="tag-doc" style="background:var(--yellow-lt);color:#B07D10">Pending</span>
+        <span class="tag-doc tag-b">En Route</span>
+        <span class="tag-doc tag-k">Inactive</span>
+        <span class="tag-doc tag-o">Overdue</span>
+      </div>
+    </div>
+
+    <!-- Buttons -->
+    <div class="comp-item">
+      <div class="comp-label">BUTTONS</div>
+      <div class="comp-preview" style="flex-direction:column;gap:8px;align-items:flex-start">
+        <button style="background:var(--green);color:#fff;border:none;border-radius:8px;padding:8px 16px;font-size:12px;font-weight:600;cursor:pointer">Primary CTA</button>
+        <button style="background:transparent;color:var(--ink);border:1.5px solid var(--line);border-radius:8px;padding:7px 16px;font-size:12px;font-weight:600;cursor:pointer">Secondary</button>
+        <button style="background:var(--red);color:#fff;border:none;border-radius:8px;padding:8px 16px;font-size:12px;font-weight:600;cursor:pointer">Danger</button>
+      </div>
+    </div>
+
+    <!-- Alerts -->
+    <div class="comp-item">
+      <div class="comp-label">ALERT BANNERS</div>
+      <div style="display:flex;flex-direction:column;gap:6px">
+        <div style="background:var(--red-lt);border-left:3px solid var(--red);color:var(--red);padding:7px 10px;border-radius:6px;font-size:11px">🔴 High waste — Ward B</div>
+        <div style="background:var(--yellow-lt);border-left:3px solid #B07D10;color:#B07D10;padding:7px 10px;border-radius:6px;font-size:11px">🟠 Pickup awaiting confirmation</div>
+        <div style="background:var(--green-lt);border-left:3px solid var(--green);color:var(--green);padding:7px 10px;border-radius:6px;font-size:11px">🟢 System healthy</div>
+      </div>
+    </div>
+
+    <!-- Form Inputs -->
+    <div class="comp-item">
+      <div class="comp-label">FORM INPUTS</div>
+      <div style="display:flex;flex-direction:column;gap:6px">
+        <div>
+          <div style="font-size:10px;font-weight:600;color:var(--muted);margin-bottom:3px">Default State</div>
+          <input style="width:100%;padding:8px 10px;border:1.5px solid var(--line);border-radius:7px;font-size:11px;color:var(--muted)" placeholder="e.g. Kitchen A" readonly>
+        </div>
+        <div>
+          <div style="font-size:10px;font-weight:600;color:var(--muted);margin-bottom:3px">Focus State</div>
+          <input style="width:100%;padding:8px 10px;border:1.5px solid var(--green);border-radius:7px;font-size:11px;box-shadow:0 0 0 3px rgba(42,99,72,.12)" value="Kitchen A" readonly>
+        </div>
+        <div>
+          <div style="font-size:10px;font-weight:600;color:var(--muted);margin-bottom:3px">Error State</div>
+          <input style="width:100%;padding:8px 10px;border:1.5px solid var(--red);border-radius:7px;font-size:11px" placeholder="" readonly>
+          <div style="font-size:10px;color:var(--red);margin-top:2px">⚠️ This field is required</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stat boxes -->
+    <div class="comp-item">
+      <div class="comp-label">STAT BOXES</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px">
+        <div style="background:#EDEBE5;border-radius:8px;padding:10px 6px;text-align:center"><div style="font-size:20px;font-weight:700;color:var(--orange)">35</div><div style="font-size:9px;color:var(--muted)">kg Today</div></div>
+        <div style="background:#EDEBE5;border-radius:8px;padding:10px 6px;text-align:center"><div style="font-size:20px;font-weight:700;color:var(--green)">2</div><div style="font-size:9px;color:var(--muted)">Entries</div></div>
+        <div style="background:#EDEBE5;border-radius:8px;padding:10px 6px;text-align:center"><div style="font-size:20px;font-weight:700;color:var(--red)">1</div><div style="font-size:9px;color:var(--muted)">Alert</div></div>
+      </div>
+    </div>
+
+    <!-- Toggle switches -->
+    <div class="comp-item">
+      <div class="comp-label">TOGGLE SWITCHES</div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div style="display:flex;align-items:center;justify-content:space-between">
+          <span style="font-size:12px">Notifications On</span>
+          <div style="width:40px;height:22px;background:var(--green);border-radius:11px;position:relative;cursor:pointer"><div style="width:18px;height:18px;background:#fff;border-radius:50%;position:absolute;top:2px;left:20px;box-shadow:0 1px 3px rgba(0,0,0,.2)"></div></div>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between">
+          <span style="font-size:12px">Audit Logs Off</span>
+          <div style="width:40px;height:22px;background:#DDD8CE;border-radius:11px;position:relative;cursor:pointer"><div style="width:18px;height:18px;background:#fff;border-radius:50%;position:absolute;top:2px;left:2px;box-shadow:0 1px 3px rgba(0,0,0,.2)"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Progress Steps -->
+    <div class="comp-item">
+      <div class="comp-label">PROGRESS STEPS (LOG FORM)</div>
+      <div style="display:flex;flex-direction:column;gap:12px">
+        <div>
+          <div style="font-size:9px;color:var(--muted);margin-bottom:6px">Step 1 Active</div>
+          <div style="display:flex;align-items:center;gap:4px">
+            <div style="width:22px;height:22px;border-radius:50%;background:var(--green);color:#fff;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;box-shadow:0 0 0 4px var(--green-lt)">1</div>
+            <div style="flex:1;height:2px;background:#DDD8CE"></div>
+            <div style="width:22px;height:22px;border-radius:50%;background:#DDD8CE;color:var(--muted);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700">2</div>
+            <div style="flex:1;height:2px;background:#DDD8CE"></div>
+            <div style="width:22px;height:22px;border-radius:50%;background:#DDD8CE;color:var(--muted);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700">✓</div>
+          </div>
+        </div>
+        <div>
+          <div style="font-size:9px;color:var(--muted);margin-bottom:6px">Step 2 Active</div>
+          <div style="display:flex;align-items:center;gap:4px">
+            <div style="width:22px;height:22px;border-radius:50%;background:var(--green);color:#fff;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700">✓</div>
+            <div style="flex:1;height:2px;background:var(--green)"></div>
+            <div style="width:22px;height:22px;border-radius:50%;background:var(--green);color:#fff;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;box-shadow:0 0 0 4px var(--green-lt)">2</div>
+            <div style="flex:1;height:2px;background:#DDD8CE"></div>
+            <div style="width:22px;height:22px;border-radius:50%;background:#DDD8CE;color:var(--muted);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700">✓</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom Nav states -->
+    <div class="comp-item">
+      <div class="comp-label">BOTTOM NAVIGATION (4-TAB)</div>
+      <div style="background:#fff;border:1px solid var(--line);border-radius:8px;padding:8px 12px;display:flex;justify-content:space-around">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:3px;color:var(--green)">
+          <div style="width:18px;height:18px;background:var(--green-lt);border-radius:3px"></div>
+          <span style="font-size:8px;font-weight:600">Dashboard</span>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:3px;color:var(--muted)">
+          <div style="width:18px;height:18px;background:#F0EDE8;border-radius:3px"></div>
+          <span style="font-size:8px">Log</span>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:3px;color:var(--muted)">
+          <div style="width:18px;height:18px;background:#F0EDE8;border-radius:3px"></div>
+          <span style="font-size:8px">Reports</span>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:3px;color:var(--muted)">
+          <div style="width:18px;height:18px;background:#F0EDE8;border-radius:3px"></div>
+          <span style="font-size:8px">Partner</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toast notification -->
+    <div class="comp-item">
+      <div class="comp-label">TOAST NOTIFICATIONS</div>
+      <div style="display:flex;flex-direction:column;gap:7px">
+        <div style="background:var(--ink);color:#fff;padding:8px 14px;border-radius:20px;font-size:11px;font-weight:600;text-align:center;box-shadow:0 4px 16px rgba(0,0,0,.2)">✅ Waste entry saved!</div>
+        <div style="background:var(--orange);color:#fff;padding:8px 14px;border-radius:20px;font-size:11px;font-weight:600;text-align:center">⚠️ Please enter a valid amount</div>
+        <div style="background:var(--green);color:#fff;padding:8px 14px;border-radius:20px;font-size:11px;font-weight:600;text-align:center">🚛 Pickup sent to GreenCo</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Interaction Notes -->
+  <div class="mt-24">
+    <h3 style="font-size:14px;font-weight:700;margin-bottom:14px">Key Interaction Specifications</h3>
+    <table class="spec-table">
+      <thead><tr><th>Interaction</th><th>Trigger</th><th>Feedback</th><th>Result</th></tr></thead>
+      <tbody>
+        <tr><td>Form validation</td><td>Tap "Continue" or "Submit"</td><td>Red border on empty required fields + toast warning</td><td>Block advance until resolved</td></tr>
+        <tr><td>Auto-fill date/time</td><td>Log Waste screen load</td><td>Date & time field shows "readonly" styling</td><td>Current date + time pre-filled, uneditable</td></tr>
+        <tr><td>Role switching</td><td>Tap "← Change role"</td><td>Animate back to role selector screen</td><td>Previous login data cleared</td></tr>
+        <tr><td>Status update (Partner)</td><td>Tap Accept / En Route / Complete</td><td>Toast "Status updated — hospital notified"</td><td>Real-time DB update, UI re-renders</td></tr>
+        <tr><td>Logout</td><td>Tap avatar in topbar</td><td>Browser confirm() dialog</td><td>Returns to Role Selector, clears session</td></tr>
+        <tr><td>Export CSV</td><td>Tap "Export CSV" in Reports</td><td>File download + toast "CSV downloaded"</td><td>Filtered data exported as .csv file</td></tr>
+        <tr><td>New pickup request</td><td>Tap "＋ New Request"</td><td>Bottom sheet modal slides up</td><td>Form filled + saved to DB on submit</td></tr>
+        <tr><td>Live sync indicator</td><td>Data changes in DB</td><td>Green "Synced" bar appears for 2 seconds</td><td>All tabs/users see updated data</td></tr>
+        <tr><td>Admin user toggle</td><td>Tap Activate/Deactivate</td><td>Row status updates inline, toast shown</td><td>User status toggled in shared DB</td></tr>
+        <tr><td>Settings toggle</td><td>Tap switch in Admin</td><td>Switch animates on/off</td><td>Setting saved to DB instantly</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ═══════════════════════ SECTION 08 — SECURITY SPEC ═══════════════════════ -->
+<div class="section-divider">
+  <span class="num">08</span>
+  <span class="title">Security & Auth Specification</span>
+  <span class="desc">Login system, role permissions, and user management</span>
+</div>
+
+<div class="page">
+  <div class="page-header">
+    <div>
+      <span class="section-tag">SECTION 08 / SECURITY</span>
+      <div class="page-title">Authentication Architecture</div>
+      <div class="page-desc">Role-based access control (RBAC) with secure credential entry. No pre-filled passwords — hospital IT creates all accounts via Admin panel.</div>
+    </div>
+    <div class="page-num">P.10</div>
+  </div>
+
+  <div class="two-col">
+    <div>
+      <h3 style="font-size:13px;font-weight:700;margin-bottom:14px">Auth Flow Specification</h3>
+      <table class="spec-table">
+        <thead><tr><th>Step</th><th>Action</th><th>Validation</th></tr></thead>
+        <tbody>
+          <tr><td>1. Role Select</td><td>User taps one of 4 role cards</td><td>Role stored in session state</td></tr>
+          <tr><td>2. Email Input</td><td>User types hospital email or staff ID</td><td>Non-empty check only (lo-fi)</td></tr>
+          <tr><td>3. Password</td><td>User types password (masked)</td><td>Non-empty check in prototype</td></tr>
+          <tr><td>4. Login Tap</td><td>Taps "Login →" button</td><td>Both fields non-empty → proceed</td></tr>
+          <tr><td>5. Error State</td><td>Either field empty</td><td>Red border + inline error message shown</td></tr>
+          <tr><td>6. Success</td><td>Fields filled → login</td><td>Role-specific dashboard renders</td></tr>
+          <tr><td>7. Logout</td><td>Tap avatar → confirm dialog</td><td>Session cleared, back to role selector</td></tr>
+        </tbody>
+      </table>
+
+      <div class="mt-16">
+        <h3 style="font-size:13px;font-weight:700;margin-bottom:14px">Role Permissions Matrix</h3>
+        <table class="spec-table">
+          <thead><tr><th>Screen / Action</th><th>Staff</th><th>Manager</th><th>Partner</th><th>Admin</th></tr></thead>
+          <tbody>
+            <tr><td>View Dashboard</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td></tr>
+            <tr><td>Log Waste Entry</td><td>✅</td><td>❌</td><td>❌</td><td>❌</td></tr>
+            <tr><td>View Reports</td><td>✅ Own dept</td><td>✅ All depts</td><td>❌</td><td>✅ All</td></tr>
+            <tr><td>Export CSV/PDF</td><td>❌</td><td>✅</td><td>❌</td><td>✅</td></tr>
+            <tr><td>Create Pickup Request</td><td>✅</td><td>✅</td><td>❌</td><td>✅</td></tr>
+            <tr><td>Accept/Update Pickup</td><td>❌</td><td>❌</td><td>✅</td><td>❌</td></tr>
+            <tr><td>View Partner Screen</td><td>✅</td><td>✅</td><td>✅ Own view</td><td>✅</td></tr>
+            <tr><td>Admin Panel</td><td>❌</td><td>❌</td><td>❌</td><td>✅</td></tr>
+            <tr><td>Add / Edit Users</td><td>❌</td><td>❌</td><td>❌</td><td>✅</td></tr>
+            <tr><td>System Settings</td><td>❌</td><td>❌</td><td>❌</td><td>✅</td></tr>
+            <tr><td>Reset All Data</td><td>❌</td><td>❌</td><td>❌</td><td>✅</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div>
+      <h3 style="font-size:13px;font-weight:700;margin-bottom:14px">User Account Setup (Admin Panel)</h3>
+      <div class="req-card" style="margin-bottom:12px">
+        <h4>👤 How Hospitals Create Accounts</h4>
+        <ul>
+          <li>System Admin logs into Admin Panel (S-11)</li>
+          <li>Taps "＋ Add User" button in User Management table</li>
+          <li>Fills in: Name, Email, Role, Department, Status</li>
+          <li>Saves → user appears in the table immediately</li>
+          <li>Admin shares credentials directly with the staff member</li>
+          <li>Staff member logs in with their own email + assigned password</li>
+        </ul>
+      </div>
+      <div class="req-card" style="margin-bottom:12px">
+        <h4>🏢 Partner Organization Setup</h4>
+        <ul>
+          <li>Admin creates accounts with Role = "Partner"</li>
+          <li>Partner logs in → sees Partner-only screens</li>
+          <li>Cannot access any hospital internal data (waste logs, reports)</li>
+          <li>Only sees pickup requests assigned to their org</li>
+        </ul>
+      </div>
+      <div class="req-card" style="margin-bottom:12px">
+        <h4>🔒 Security Design Principles</h4>
+        <ul>
+          <li>Zero pre-filled credentials — all fields start empty</li>
+          <li>Role-first authentication flow prevents accidental cross-role access</li>
+          <li>Bottom confirmation dialog before logout prevents accidental sign-out</li>
+          <li>Inactive users cannot log in (controlled from Admin panel)</li>
+          <li>Audit log toggle tracks all user actions for compliance</li>
+          <li>Internal server hosting — no external data transmission (MoD requirement)</li>
+        </ul>
+      </div>
+      <div class="req-card">
+        <h4>📋 Credential Policy (Recommended)</h4>
+        <ul>
+          <li>Email format: firstname@hospitalname.sa</li>
+          <li>Partners: username@companyname.sa</li>
+          <li>Passwords: minimum 8 characters (enforced at production)</li>
+          <li>Password reset: contact System Admin directly</li>
+          <li>No external email servers used (internal policy)</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════ FOOTER ═══════════════════════ -->
+<div style="background:var(--ink);padding:40px 80px;display:flex;align-items:center;justify-content:space-between">
+  <div>
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+      <div style="width:32px;height:32px;background:var(--green);border-radius:8px;display:flex;align-items:center;justify-content:center">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="white"><path d="M20 3H4v10c0 3.3 2.7 6 6 6h4c3.3 0 6-2.7 6-6V3zm-2 10c0 2.2-1.8 4-4 4h-4c-2.2 0-4-1.8-4-4V5h12v8z"/><path d="M12 19v2M8 21h8"/></svg>
+      </div>
+      <span style="font-family:'Fraunces',serif;font-size:18px;color:#fff">RePlate</span>
+    </div>
+    <div style="font-size:11px;color:rgba(255,255,255,0.4);line-height:2">
+      SE365 Human-Computer Interaction · Prince Sultan University<br>
+      Milestone 2: Lo-Fi Prototype · March 2026
+    </div>
+  </div>
+  <div style="text-align:right">
+    <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:rgba(255,255,255,0.3);line-height:2">
+      10 Pages · 12 Screens · 4 User Roles<br>
+      3 Storyboard Flows · Full Design System<br>
+      Role-Based Auth · Shared Database Spec
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
+ENDOFFILE

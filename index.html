@@ -1,0 +1,1760 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RePlate — Hospital Food Waste Tracking</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#F2F0EA;color:#1A1814;font-size:14px;line-height:1.5}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-thumb{background:#c0b9b0;border-radius:4px}
+button{font-family:inherit;cursor:pointer;border:none}
+input,select,textarea{font-family:inherit;outline:none}
+input:focus,select:focus,textarea:focus{border-color:#2A6348!important;box-shadow:0 0 0 3px rgba(42,99,72,.12)}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+@keyframes slideUp{from{transform:translateY(110%)}to{transform:none}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+@keyframes shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
+.anim-fadeup{animation:fadeUp .3s ease forwards}
+.anim-shake{animation:shake .4s ease}
+
+#app{max-width:480px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column;position:relative;background:#F2F0EA}
+#topbar{background:#fff;border-bottom:1px solid #DDD8CE;height:54px;padding:0 16px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 1px 4px rgba(0,0,0,.05)}
+#content{flex:1;padding:18px 16px 76px;overflow-y:auto}
+#bnav{background:#fff;border-top:1px solid #DDD8CE;height:62px;display:flex;position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;z-index:100;box-shadow:0 -2px 10px rgba(0,0,0,.05)}
+
+.tb-logo{width:29px;height:29px;background:#2A6348;border-radius:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.tb-name{font-weight:700;font-size:15px;letter-spacing:-.3px;margin-left:8px}
+.tb-badge{font-family:monospace;font-size:9px;color:#78746A;background:#EDEBE5;padding:2px 7px;border-radius:4px;margin-left:6px}
+.tb-right{display:flex;align-items:center;gap:10px}
+.tb-bell{position:relative;cursor:pointer;display:flex;color:#78746A}
+.tb-dot{width:7px;height:7px;background:#B83025;border-radius:50%;position:absolute;top:-1px;right:-1px}
+.avatar-btn{width:32px;height:32px;border-radius:50%;background:#E4F2EB;border:2px solid #2A6348;font-size:11px;font-weight:700;color:#2A6348;cursor:pointer;display:flex;align-items:center;justify-content:center}
+
+.ni{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;color:#B0A89E;font-size:9px;font-weight:600;border:none;background:none;transition:color .15s;padding:0}
+.ni.active{color:#2A6348}
+.ni svg{width:19px;height:19px}
+
+.card{background:#fff;border:1px solid #DDD8CE;border-radius:13px;padding:16px;margin-bottom:12px;box-shadow:0 2px 12px rgba(26,24,20,.05)}
+.card-hd{font-size:10px;font-weight:700;color:#78746A;text-transform:uppercase;letter-spacing:.6px;margin-bottom:11px}
+
+.stat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-bottom:12px}
+.stat-row-2{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:12px}
+.sbox{background:#EDEBE5;border-radius:9px;padding:12px 10px;text-align:center}
+.sbox .n{font-size:22px;font-weight:700;letter-spacing:-1px}
+.sbox .l{font-size:9px;color:#78746A;margin-top:2px;line-height:1.3}
+.c-green{color:#2A6348}.c-orange{color:#C4672F}.c-red{color:#B83025}.c-blue{color:#2563EB}.c-muted{color:#1A1814}
+
+.tag{display:inline-flex;align-items:center;padding:2px 9px;border-radius:20px;font-size:10px;font-weight:700}
+.tag-green{background:#E4F2EB;color:#2A6348}
+.tag-orange{background:#FCEEE4;color:#C4672F}
+.tag-red{background:#FBEAE8;color:#B83025}
+.tag-yellow{background:#FEF6E4;color:#B07D10}
+.tag-gray{background:#EDEBE5;color:#78746A}
+.tag-blue{background:#EFF6FF;color:#2563EB}
+.tag-purple{background:#F5F3FF;color:#6D28D9}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:10px 16px;font-size:13px;font-weight:600;border-radius:8px;transition:all .15s;border:none}
+.btn:active{transform:scale(.97)}
+.btn-p{background:#2A6348;color:#fff}.btn-p:hover{background:#225539}
+.btn-o{background:transparent;color:#1A1814;border:1.5px solid #DDD8CE}.btn-o:hover{border-color:#2A6348;color:#2A6348}
+.btn-danger{background:#B83025;color:#fff}
+.btn-ghost{background:transparent;color:#78746A;padding:5px 9px;font-size:11px;border-radius:6px}.btn-ghost:hover{background:#EDEBE5}
+.btn-sm{padding:6px 12px;font-size:11px}
+.btn-full{width:100%}
+.btn-2col{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+
+.fg{margin-bottom:13px}
+.fl{display:block;font-size:11px;font-weight:600;color:#78746A;margin-bottom:5px}
+.fc{width:100%;padding:9px 11px;border:1.5px solid #DDD8CE;border-radius:8px;font-size:12px;background:#fff;color:#1A1814;transition:border-color .15s,box-shadow .15s}
+.fc.readonly{background:#EDEBE5;color:#78746A}
+.fc.error{border-color:#B83025!important}
+.fc-2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+select.fc{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='7'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%2378746A' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;padding-right:28px}
+textarea.fc{resize:none}
+
+.alert{border-radius:7px;padding:9px 12px;margin-bottom:7px;font-size:11px;line-height:1.5;display:flex;gap:8px}
+.alert-red{background:#FBEAE8;border-left:3px solid #B83025;color:#B83025}
+.alert-yellow{background:#FEF6E4;border-left:3px solid #B07D10;color:#B07D10}
+.alert-green{background:#E4F2EB;border-left:3px solid #2A6348;color:#2A6348}
+.alert-blue{background:#EFF6FF;border-left:3px solid #2563EB;color:#2563EB}
+
+.li{display:flex;align-items:center;justify-content:space-between;padding:11px 0;border-bottom:1px solid #DFD9D0}
+.li:last-child{border-bottom:none}
+.li-l{display:flex;align-items:center;gap:9px;min-width:0}
+.li-ic{width:34px;height:34px;border-radius:8px;background:#EDEBE5;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
+.li-title{font-size:12px;font-weight:600}
+.li-sub{font-size:10px;color:#78746A;margin-top:1px}
+
+.barchart{display:flex;align-items:flex-end;gap:5px;height:70px;margin:8px 0 4px}
+.bc-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px}
+.bc-bar{width:100%;border-radius:3px 3px 0 0;transition:height .4s,opacity .15s;cursor:default}
+.bc-bar:hover{opacity:1!important}
+.bc-lbl{font-size:8px;color:#78746A;font-family:monospace}
+
+.steps{display:flex;align-items:center;margin-bottom:20px}
+.step-dot{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;transition:all .2s}
+.step-dot.done{background:#2A6348;color:#fff}
+.step-dot.active{background:#2A6348;color:#fff;box-shadow:0 0 0 4px #E4F2EB}
+.step-dot.pending{background:#DFD9D0;color:#78746A}
+.step-line{flex:1;height:2px;transition:background .3s}
+.step-line.done{background:#2A6348}
+.step-line.pending{background:#DFD9D0}
+
+.sw{width:38px;height:21px;border-radius:11px;position:relative;cursor:pointer;transition:background .2s;flex-shrink:0;border:none}
+.sw-thumb{width:17px;height:17px;background:#fff;border-radius:50%;position:absolute;top:2px;transition:left .2s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+
+.dt{width:100%;border-collapse:collapse;font-size:11px}
+.dt th{text-align:left;padding:7px 9px;background:#EDEBE5;color:#78746A;font-weight:700;font-size:10px;cursor:pointer;user-select:none;white-space:nowrap}
+.dt th:hover{background:#DFD9D0}
+.dt td{padding:9px 9px;border-bottom:1px solid #DFD9D0}
+.dt tr:hover td{background:#F7F5F0}
+
+.overlay{display:none;position:fixed;inset:0;background:rgba(26,24,20,.52);z-index:200;align-items:flex-end;justify-content:center}
+.overlay.show{display:flex}
+.modal{background:#fff;border-radius:18px 18px 0 0;padding:22px 20px 36px;width:100%;max-width:480px;max-height:92vh;overflow-y:auto;animation:slideUp .25s ease}
+.modal-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+.modal-close{width:28px;height:28px;border-radius:50%;background:#EDEBE5;border:none;font-size:14px;color:#78746A;cursor:pointer}
+
+#toast{position:fixed;bottom:74px;left:50%;transform:translateX(-50%);background:#1A1814;color:#fff;padding:9px 18px;border-radius:22px;font-size:12px;font-weight:600;z-index:999;white-space:nowrap;pointer-events:none;opacity:0;transition:opacity .25s;box-shadow:0 4px 20px rgba(0,0,0,.25)}
+#toast.show{opacity:1}
+
+.screen{display:none}.screen.active{display:block}
+
+/* ── AUTH SCREENS ── */
+.auth-wrap{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:28px 20px;background:#F2F0EA}
+.auth-box{background:#fff;border:1px solid #DDD8CE;border-radius:17px;padding:30px 26px;width:100%;max-width:380px;box-shadow:0 8px 32px rgba(26,24,20,.09)}
+.auth-logo{display:flex;align-items:center;gap:9px;justify-content:center;margin-bottom:6px}
+.auth-logo-icon{width:42px;height:42px;background:#2A6348;border-radius:10px;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(42,99,72,.28)}
+.pw-wrap{position:relative}
+.pw-wrap .fc{padding-right:40px}
+.pw-eye{position:absolute;right:11px;top:50%;transform:translateY(-50%);cursor:pointer;color:#78746A;font-size:15px;user-select:none}
+.err-box{background:#FBEAE8;border:1px solid #B83025;border-radius:8px;padding:9px 12px;font-size:11px;color:#B83025;margin-bottom:12px;display:none}
+.err-box.show{display:block}
+.divider{height:1px;background:#EDEBE5;margin:16px 0}
+.link-btn{color:#2A6348;font-weight:600;cursor:pointer;font-size:12px}
+.link-btn:hover{text-decoration:underline}
+
+/* Admin setup */
+.setup-step{display:none}.setup-step.active{display:block}
+.setup-progress{display:flex;gap:6px;margin-bottom:24px}
+.sp-dot{flex:1;height:4px;border-radius:2px;background:#DFD9D0;transition:background .3s}
+.sp-dot.done{background:#2A6348}
+
+/* User table badges */
+.role-badge{display:inline-flex;padding:2px 8px;border-radius:20px;font-size:10px;font-weight:700}
+
+/* Strength meter */
+.strength-bar{height:3px;border-radius:2px;margin-top:4px;transition:width .3s,background .3s}
+
+/* Live dot */
+.live-dot{width:6px;height:6px;background:#2A6348;border-radius:50%;display:inline-block;margin-right:4px;animation:pulse 2s infinite}
+
+#sync-bar{background:#E4F2EB;border-bottom:1px solid #c3e0d0;padding:4px 16px;font-size:10px;color:#2A6348;font-weight:600;text-align:center;display:none}
+#sync-bar.show{display:block}
+#sync-bar.warn{background:#FEF6E4;border-color:#e8c97a;color:#B07D10}
+
+#loading-screen{position:fixed;inset:0;background:#F2F0EA;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;gap:16px}
+.spinner{width:34px;height:34px;border:3px solid #DDD8CE;border-top-color:#2A6348;border-radius:50%;animation:spin .9s linear infinite}
+
+/* ── TESTER GUIDE ── */
+#tester-guide { position:fixed; inset:0; background:rgba(26,24,20,.7); z-index:9999; display:none; align-items:flex-end; justify-content:center; }
+#tester-guide.show { display:flex; }
+.tg-box { background:#fff; border-radius:20px 20px 0 0; padding:28px 22px 40px; width:100%; max-width:480px; max-height:90vh; overflow-y:auto; animation:slideUp .3s ease; }
+.tg-row { display:flex; align-items:flex-start; gap:12px; padding:12px 0; border-bottom:1px solid #F0EDE8; }
+.tg-row:last-child { border-bottom:none; }
+.tg-ic { width:36px; height:36px; border-radius:9px; display:flex; align-items:center; justify-content:center; font-size:17px; flex-shrink:0; }
+.tg-body strong { font-size:13px; display:block; margin-bottom:2px; }
+.tg-body p { font-size:11px; color:#78746A; line-height:1.6; }
+/* ── NOTIF PANEL ── */
+.notif-panel { position:fixed; top:54px; right:0; width:300px; max-width:100%; background:#fff; border:1px solid #DDD8CE; border-radius:0 0 14px 14px; box-shadow:0 8px 24px rgba(0,0,0,.12); z-index:150; display:none; max-height:70vh; overflow-y:auto; }
+.notif-panel.show { display:block; }
+.np-hd { padding:12px 16px; font-size:12px; font-weight:700; border-bottom:1px solid #F0EDE8; display:flex; justify-content:space-between; }
+.np-item { padding:11px 16px; border-bottom:1px solid #F0EDE8; display:flex; gap:10px; }
+.np-item:last-child { border-bottom:none; }
+.np-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; margin-top:4px; }
+.np-text { font-size:11px; line-height:1.5; }
+.np-time { font-size:10px; color:#78746A; margin-top:2px; }
+</style>
+</head>
+<body>
+
+<!-- Loading -->
+<div id="loading-screen">
+  <div style="width:46px;height:46px;background:#2A6348;border-radius:12px;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(42,99,72,.3)">
+    <svg viewBox="0 0 24 24" width="26" height="26" fill="white"><path d="M20 3H4v10c0 3.3 2.7 6 6 6h4c3.3 0 6-2.7 6-6V3zm-2 10c0 2.2-1.8 4-4 4h-4c-2.2 0-4-1.8-4-4V5h12v8z"/><path d="M12 19v2M8 21h8"/></svg>
+  </div>
+  <div class="spinner"></div>
+  <div style="font-size:12px;color:#78746A;font-weight:500">Loading RePlate…</div>
+</div>
+
+<!-- ══ FIRST-TIME SETUP ══ -->
+<div id="setup-screen" class="auth-wrap" style="display:none">
+  <div class="auth-box">
+    <div class="auth-logo">
+      <div class="auth-logo-icon"><svg viewBox="0 0 24 24" width="22" height="22" fill="white"><path d="M20 3H4v10c0 3.3 2.7 6 6 6h4c3.3 0 6-2.7 6-6V3zm-2 10c0 2.2-1.8 4-4 4h-4c-2.2 0-4-1.8-4-4V5h12v8z"/><path d="M12 19v2M8 21h8"/></svg></div>
+      <span style="font-size:22px;font-weight:700;letter-spacing:-.4px">RePlate</span>
+    </div>
+    <p style="text-align:center;font-size:12px;color:#78746A;margin-bottom:20px">First-time setup — Create your admin account</p>
+
+    <div class="setup-progress">
+      <div class="sp-dot done" id="sp1"></div>
+      <div class="sp-dot" id="sp2"></div>
+      <div class="sp-dot" id="sp3"></div>
+    </div>
+
+    <!-- Step 1: Hospital info -->
+    <div class="setup-step active" id="setup-s1">
+      <div style="font-size:14px;font-weight:700;margin-bottom:4px">🏥 Hospital Information</div>
+      <p style="font-size:11px;color:#78746A;margin-bottom:16px">This will appear across the dashboard</p>
+      <div class="fg"><label class="fl">Hospital Name <span style="color:#B83025">*</span></label>
+        <input class="fc" id="s-hosp-name" placeholder="e.g. Dallah Hospital" maxlength="60"></div>
+      <div class="fg"><label class="fl">City / Location</label>
+        <input class="fc" id="s-hosp-city" placeholder="e.g. Riyadh, Saudi Arabia"></div>
+      <div class="fg"><label class="fl">System Contact Email <span style="color:#B83025">*</span></label>
+        <input class="fc" id="s-hosp-email" type="email" placeholder="admin@hospital.sa"></div>
+      <div class="err-box" id="s1-err"></div>
+      <button class="btn btn-p btn-full" onclick="setupStep1()">Continue →</button>
+    </div>
+
+    <!-- Step 2: Admin account -->
+    <div class="setup-step" id="setup-s2">
+      <div style="font-size:14px;font-weight:700;margin-bottom:4px">🔐 Admin Account</div>
+      <p style="font-size:11px;color:#78746A;margin-bottom:16px">You will use these credentials to manage the system</p>
+      <div class="fg"><label class="fl">Full Name <span style="color:#B83025">*</span></label>
+        <input class="fc" id="s-admin-name" placeholder="e.g. Yasser Al-Hassan"></div>
+      <div class="fg"><label class="fl">Admin Email <span style="color:#B83025">*</span></label>
+        <input class="fc" id="s-admin-email" type="email" placeholder="admin@hospital.sa"></div>
+      <div class="fg"><label class="fl">Password <span style="color:#B83025">*</span></label>
+        <div class="pw-wrap"><input class="fc" id="s-admin-pw" type="password" placeholder="Min. 8 characters" oninput="checkStrength(this.value,'s-strength')">
+        <span class="pw-eye" onclick="togglePw('s-admin-pw',this)">👁</span></div>
+        <div style="display:flex;gap:4px;margin-top:5px" id="s-strength-bars">
+          <div style="flex:1;height:3px;border-radius:2px;background:#DFD9D0" id="sb1"></div>
+          <div style="flex:1;height:3px;border-radius:2px;background:#DFD9D0" id="sb2"></div>
+          <div style="flex:1;height:3px;border-radius:2px;background:#DFD9D0" id="sb3"></div>
+          <div style="flex:1;height:3px;border-radius:2px;background:#DFD9D0" id="sb4"></div>
+        </div>
+        <div style="font-size:10px;color:#78746A;margin-top:3px" id="s-strength-lbl">Enter a password</div>
+      </div>
+      <div class="fg"><label class="fl">Confirm Password <span style="color:#B83025">*</span></label>
+        <div class="pw-wrap"><input class="fc" id="s-admin-pw2" type="password" placeholder="Re-enter password">
+        <span class="pw-eye" onclick="togglePw('s-admin-pw2',this)">👁</span></div>
+      </div>
+      <div class="err-box" id="s2-err"></div>
+      <div class="btn-2col">
+        <button class="btn btn-o btn-full" onclick="goSetupStep(1)">← Back</button>
+        <button class="btn btn-p btn-full" onclick="setupStep2()">Continue →</button>
+      </div>
+    </div>
+
+    <!-- Step 3: Confirm -->
+    <div class="setup-step" id="setup-s3">
+      <div style="font-size:14px;font-weight:700;margin-bottom:4px">✅ Ready to Launch</div>
+      <p style="font-size:11px;color:#78746A;margin-bottom:16px">Review your setup before activating</p>
+      <div style="background:#EDEBE5;border-radius:9px;padding:14px;margin-bottom:16px" id="setup-review"></div>
+      <div class="alert alert-blue" style="margin-bottom:14px">
+        <span>ℹ️</span><div>After setup, go to <strong>Admin → Users</strong> to add staff, manager, and partner accounts with their own emails and passwords.</div>
+      </div>
+      <div class="err-box" id="s3-err"></div>
+      <div class="btn-2col">
+        <button class="btn btn-o btn-full" onclick="goSetupStep(2)">← Back</button>
+        <button class="btn btn-p btn-full" onclick="finishSetup()">🚀 Launch RePlate</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ LOGIN ══ -->
+<div id="login-screen" class="auth-wrap" style="display:none">
+  <div class="auth-box">
+    <div class="auth-logo">
+      <div class="auth-logo-icon"><svg viewBox="0 0 24 24" width="22" height="22" fill="white"><path d="M20 3H4v10c0 3.3 2.7 6 6 6h4c3.3 0 6-2.7 6-6V3zm-2 10c0 2.2-1.8 4-4 4h-4c-2.2 0-4-1.8-4-4V5h12v8z"/><path d="M12 19v2M8 21h8"/></svg></div>
+      <span style="font-size:22px;font-weight:700;letter-spacing:-.4px">RePlate</span>
+    </div>
+    <p style="text-align:center;font-size:12px;color:#78746A;margin-bottom:22px" id="login-hosp-name">Sign in to your account</p>
+
+    <div class="fg"><label class="fl">Email</label>
+      <input class="fc" id="l-email" type="email" placeholder="your@email.com" autocomplete="email" onkeydown="if(event.key==='Enter')document.getElementById('l-pw').focus()"></div>
+    <div class="fg"><label class="fl">Password</label>
+      <div class="pw-wrap">
+        <input class="fc" id="l-pw" type="password" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()">
+        <span class="pw-eye" onclick="togglePw('l-pw',this)">👁</span>
+      </div>
+    </div>
+
+    <div class="err-box" id="l-err"></div>
+
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+      <label style="display:flex;align-items:center;gap:6px;font-size:11px;color:#78746A;cursor:pointer">
+        <input type="checkbox" id="l-remember" style="width:14px;height:14px;accent-color:#2A6348"> Remember me
+      </label>
+      <span class="link-btn" onclick="showForgot()">Forgot password?</span>
+    </div>
+
+    <button class="btn btn-p btn-full" id="l-btn" onclick="doLogin()">Sign In</button>
+
+    <div class="divider"></div>
+    <div style="text-align:center;font-size:11px;color:#78746A">
+      New user? Contact your <strong>system administrator</strong> to create your account.
+    </div>
+    <div style="text-align:center;margin-top:10px">
+      <span class="link-btn" onclick="showScreen('register')" style="font-size:12px">
+        Don't have an account? <strong style="color:#2A6348">Request Access →</strong>
+      </span>
+    </div>
+
+    <!-- Locked state -->
+    <div id="lock-msg" style="display:none;margin-top:12px">
+      <div class="alert alert-red"><span>🔒</span><div id="lock-text">Account temporarily locked.</div></div>
+    </div>
+  </div>
+  <div style="margin-top:16px;font-size:10px;color:#B0A89E;font-family:monospace;text-align:center">SE365 · Prince Sultan University · RePlate</div>
+</div>
+
+<!-- ══ FORGOT PASSWORD ══ -->
+<div id="forgot-screen" class="auth-wrap" style="display:none">
+  <div class="auth-box">
+    <div style="font-size:16px;font-weight:700;margin-bottom:6px">🔑 Reset Password</div>
+    <p style="font-size:12px;color:#78746A;margin-bottom:20px">Enter your email — the admin will reset your password manually.</p>
+    <div class="fg"><label class="fl">Your Email</label>
+      <input class="fc" id="fp-email" type="email" placeholder="your@email.com"></div>
+    <div id="fp-msg" style="display:none;margin-bottom:12px"></div>
+    <button class="btn btn-p btn-full" onclick="submitForgot()">Send Request</button>
+    <p style="text-align:center;font-size:11px;color:#78746A;margin-top:14px;cursor:pointer" onclick="showLogin()">← Back to login</p>
+  </div>
+</div>
+
+<!-- ══ MAIN APP ══ -->
+<div id="app-screen" style="display:none">
+  <div id="sync-bar"></div>
+  <div id="app">
+    <div id="topbar">
+      <div style="display:flex;align-items:center">
+        <div class="tb-logo"><svg viewBox="0 0 24 24" width="16" height="16" fill="white"><path d="M20 3H4v10c0 3.3 2.7 6 6 6h4c3.3 0 6-2.7 6-6V3zm-2 10c0 2.2-1.8 4-4 4h-4c-2.2 0-4-1.8-4-4V5h12v8z"/><path d="M12 19v2M8 21h8"/></svg></div>
+        <span class="tb-name">RePlate</span>
+        <span class="tb-badge" id="tb-role">—</span>
+      </div>
+      <div class="tb-right">
+        <div class="tb-bell" id="refresh-btn" onclick="refreshFromCloud()" title="Refresh data" style="cursor:pointer;color:#78746A;display:flex">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="18" height="18"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+        </div>
+        <div class="tb-bell" onclick="openNotifPanel()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="20" height="20"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+          <div class="tb-dot"></div>
+        </div>
+        <button class="avatar-btn" id="tb-avatar" onclick="openModal('overlay-profile')">—</button>
+      </div>
+    </div>
+    <div id="content">
+      <div class="screen active" id="s-dashboard"></div>
+      <div class="screen" id="s-log"></div>
+      <div class="screen" id="s-reports"></div>
+      <div class="screen" id="s-partner"></div>
+      <div class="screen" id="s-admin"></div>
+    </div>
+    <nav id="bnav"></nav>
+  </div>
+</div>
+
+<!-- ══ MODALS ══ -->
+
+<!-- Profile / Account -->
+<div class="overlay" id="overlay-profile">
+  <div class="modal">
+    <div class="modal-hd"><h3 style="font-size:16px;font-weight:700">My Account</h3><button class="modal-close" onclick="closeModal('overlay-profile')">✕</button></div>
+    <div id="profile-content"></div>
+  </div>
+</div>
+
+<!-- Change password -->
+<div class="overlay" id="overlay-chpw">
+  <div class="modal">
+    <div class="modal-hd"><h3 style="font-size:16px;font-weight:700">Change Password</h3><button class="modal-close" onclick="closeModal('overlay-chpw')">✕</button></div>
+    <div class="fg"><label class="fl">Current Password</label>
+      <div class="pw-wrap"><input class="fc" id="cp-old" type="password" placeholder="••••••••"><span class="pw-eye" onclick="togglePw('cp-old',this)">👁</span></div></div>
+    <div class="fg"><label class="fl">New Password</label>
+      <div class="pw-wrap"><input class="fc" id="cp-new" type="password" placeholder="Min. 8 characters" oninput="checkStrength(this.value,'cp')"><span class="pw-eye" onclick="togglePw('cp-new',this)">👁</span></div>
+      <div style="display:flex;gap:4px;margin-top:5px" id="cp-bars">
+        <div style="flex:1;height:3px;border-radius:2px;background:#DFD9D0" id="cp-b1"></div>
+        <div style="flex:1;height:3px;border-radius:2px;background:#DFD9D0" id="cp-b2"></div>
+        <div style="flex:1;height:3px;border-radius:2px;background:#DFD9D0" id="cp-b3"></div>
+        <div style="flex:1;height:3px;border-radius:2px;background:#DFD9D0" id="cp-b4"></div>
+      </div>
+    </div>
+    <div class="fg"><label class="fl">Confirm New Password</label>
+      <div class="pw-wrap"><input class="fc" id="cp-new2" type="password" placeholder="Re-enter new password"><span class="pw-eye" onclick="togglePw('cp-new2',this)">👁</span></div></div>
+    <div class="err-box" id="cp-err"></div>
+    <button class="btn btn-p btn-full" onclick="changePassword()">Update Password</button>
+  </div>
+</div>
+
+<!-- Pickup request -->
+<div class="overlay" id="overlay-pickup">
+  <div class="modal">
+    <div class="modal-hd"><h3 style="font-size:16px;font-weight:700">Create Pickup Request</h3><button class="modal-close" onclick="closeModal('overlay-pickup')">✕</button></div>
+    <div class="fg"><label class="fl">Waste Partner</label>
+      <select class="fc" id="pu-partner"><option>GreenCo</option><option>EcoWaste Co.</option><option>BioRecycle Ltd.</option></select></div>
+    <div class="fc-2">
+      <div class="fg"><label class="fl">Estimated kg <span style="color:#B83025">*</span></label><input class="fc" id="pu-kg" type="number" placeholder="60" min="1"></div>
+      <div class="fg"><label class="fl">Preferred Date</label><input class="fc" id="pu-date" type="date"></div>
+    </div>
+    <div class="fg"><label class="fl">Waste Type</label>
+      <select class="fc" id="pu-type"><option>Mixed Organic</option><option>Meat / Protein</option><option>Compostable</option><option>Recyclable Packaging</option></select></div>
+    <div class="fg"><label class="fl">Notes</label><input class="fc" id="pu-notes" type="text" placeholder="e.g. Include morning prep from Kitchen A"></div>
+    <button class="btn btn-p btn-full" onclick="submitPickup()">Send Request to Partner</button>
+  </div>
+</div>
+
+<!-- User management modal -->
+<div class="overlay" id="overlay-user">
+  <div class="modal">
+    <div class="modal-hd"><h3 id="um-title" style="font-size:16px;font-weight:700">Add User</h3><button class="modal-close" onclick="closeModal('overlay-user')">✕</button></div>
+    <input type="hidden" id="um-id">
+    <div class="fc-2">
+      <div class="fg"><label class="fl">Full Name <span style="color:#B83025">*</span></label><input class="fc" id="um-name" placeholder="e.g. Sara Al-Nasser"></div>
+      <div class="fg"><label class="fl">Email <span style="color:#B83025">*</span></label><input class="fc" id="um-email" type="email" placeholder="sara@hospital.sa"></div>
+    </div>
+    <div class="fc-2">
+      <div class="fg"><label class="fl">Role <span style="color:#B83025">*</span></label>
+        <select class="fc" id="um-role"><option>Staff</option><option>Manager</option><option>Partner</option><option>Admin</option></select></div>
+      <div class="fg"><label class="fl">Department</label><input class="fc" id="um-dept" placeholder="Kitchen A"></div>
+    </div>
+    <div class="fg" id="um-pw-section"><label class="fl">Password <span style="color:#B83025">*</span></label>
+      <div class="pw-wrap"><input class="fc" id="um-pw" type="password" placeholder="Min. 8 characters"><span class="pw-eye" onclick="togglePw('um-pw',this)">👁</span></div>
+      <div style="font-size:10px;color:#78746A;margin-top:4px">User can change this after first login</div>
+    </div>
+    <div class="fg"><label class="fl">Status</label>
+      <select class="fc" id="um-status"><option>Active</option><option>Inactive</option></select></div>
+    <div class="err-box" id="um-err"></div>
+    <button class="btn btn-p btn-full" onclick="saveUser()">Save User</button>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+// ══════════════════════════════════════════════════════
+//  SECURITY & AUTH ENGINE
+// ══════════════════════════════════════════════════════
+
+const SES_KEY = 'rp4_ses';
+const LOCAL_KEY = 'rp4_local_cache';
+const MAX_ATTEMPTS = 5;
+const LOCKOUT_MS   = 15 * 60 * 1000;
+
+// ══════════════════════════════════════════════════════
+//  FIREBASE REALTIME DATABASE
+//  Free cloud storage — 1GB, always on, no setup needed
+// ══════════════════════════════════════════════════════
+const FB_URL = 'https://replate-hci-default-rtdb.firebaseio.com/db.json';
+
+let _saveTimer = null;
+let _lastSaveLen = 0;
+
+async function loadFromCloud() {
+  showSyncBar('⏳ Loading data…', false);
+  try {
+    const res = await fetch(FB_URL, { cache: 'no-store' });
+    if (!res.ok) throw new Error(res.status);
+    const data = await res.json();
+    if (!data || !data.users) throw new Error('empty');
+    try { localStorage.setItem(LOCAL_KEY, JSON.stringify(data)); } catch {}
+    showSyncBar('✓ Connected', false);
+    return data;
+  } catch(e) {
+    // Fall back to local cache
+    try {
+      const r = localStorage.getItem(LOCAL_KEY);
+      if (r) {
+        showSyncBar('⚠️ Offline — using cached data', true);
+        return JSON.parse(r);
+      }
+    } catch {}
+    showSyncBar('⚠️ Could not connect', true);
+    return null;
+  }
+}
+
+async function saveDB(db) {
+  DB = db;
+  // Write to local cache immediately (instant)
+  try { localStorage.setItem(LOCAL_KEY, JSON.stringify(db)); } catch {}
+  // Debounce cloud write — max once per second
+  clearTimeout(_saveTimer);
+  _saveTimer = setTimeout(async () => {
+    try {
+      await fetch(FB_URL, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(db)
+      });
+      showSyncBar('✓ Saved', false);
+    } catch {
+      showSyncBar('⚠️ Offline — saved locally', true);
+    }
+  }, 1000);
+}
+
+function getDB() {
+  try { const r = localStorage.getItem(LOCAL_KEY); return r ? JSON.parse(r) : null; } catch { return null; }
+}
+
+// Simple hash
+function hashPw(pw, salt) {
+  let s = pw + ':' + salt + ':rp2026';
+  for (let i = 0; i < 5; i++) s = btoa(s);
+  return s;
+}
+function genSalt() {
+  return Math.random().toString(36).slice(2) + Date.now().toString(36);
+}
+
+
+// ── SESSION ──
+function getSession() {
+  try { const r = sessionStorage.getItem(SES_KEY); return r ? JSON.parse(r) : null; } catch { return null; }
+}
+function setSession(user) {
+  try { sessionStorage.setItem(SES_KEY, JSON.stringify({userId: user.id, role: user.role, ts: Date.now()})); } catch {}
+}
+function clearSession() {
+  try { sessionStorage.removeItem(SES_KEY); } catch {}
+}
+
+// ── AUTH HELPERS ──
+function getLoginAttempts(email) {
+  try { const r = localStorage.getItem('rp4_att_' + btoa(email)); return r ? JSON.parse(r) : {count:0,lockUntil:0}; } catch { return {count:0,lockUntil:0}; }
+}
+function setLoginAttempts(email, data) {
+  try { localStorage.setItem('rp4_att_' + btoa(email), JSON.stringify(data)); } catch {}
+}
+function clearLoginAttempts(email) {
+  try { localStorage.removeItem('rp4_att_' + btoa(email)); } catch {}
+}
+
+function isLocked(email) {
+  const att = getLoginAttempts(email);
+  if (att.lockUntil && Date.now() < att.lockUntil) return att.lockUntil;
+  return false;
+}
+
+function recordFailedAttempt(email) {
+  const att = getLoginAttempts(email);
+  att.count = (att.count || 0) + 1;
+  if (att.count >= MAX_ATTEMPTS) att.lockUntil = Date.now() + LOCKOUT_MS;
+  setLoginAttempts(email, att);
+  return att;
+}
+
+function authenticate(email, pw) {
+  if (!DB) return null;
+  const u = DB.users.find(u => u.email.toLowerCase() === email.toLowerCase().trim() && u.status === 'Active');
+  if (!u) return null;
+  const hash = hashPw(pw, u.salt);
+  if (hash !== u.pwHash) return null;
+  return u;
+}
+
+// ══════════════════════════════════════════════════════
+//  DATA
+// ══════════════════════════════════════════════════════
+
+function today(offset=0) {
+  const d = new Date(); d.setDate(d.getDate()-offset);
+  return d.toISOString().slice(0,10);
+}
+function nowTime() { return new Date().toTimeString().slice(0,5); }
+
+const SEED_ENTRIES = [];
+const SEED_PICKUPS = [];
+
+// ══════════════════════════════════════════════════════
+//  APP STATE
+// ══════════════════════════════════════════════════════
+let DB = null;
+let currentUser = null;
+let currentScreen = '';
+let logStep = 1, logForm = {};
+let sortCol = 'date', sortDir = 'desc';
+let reportFilters = {range:'This Week',dept:'All',cat:'All'};
+let setupData = {};
+
+// ══════════════════════════════════════════════════════
+//  INIT
+// ══════════════════════════════════════════════════════
+window.onload = async function() {
+  DB = await loadFromCloud();
+  document.getElementById('loading-screen').style.display = 'none';
+
+  if (!DB || !DB.users) {
+    showScreen('setup');
+  } else {
+    const ses = getSession();
+    if (ses) {
+      const u = DB.users.find(u => u.id === ses.userId && u.status === 'Active');
+      if (u && (Date.now() - ses.ts) < 8 * 3600000) {
+        currentUser = u;
+        launchApp();
+        return;
+      }
+    }
+    showScreen('login');
+  }
+};
+
+// Poll for updates every 30 seconds
+setInterval(async () => {
+  if (!currentUser || !currentScreen) return;
+  try {
+    const res = await fetch(FB_URL, { cache: 'no-store' });
+    if (!res.ok) return;
+    const fresh = await res.json();
+    if (!fresh || !fresh.users) return;
+    const newLen = (fresh.entries?.length||0) + (fresh.pickups?.length||0) + (fresh.users?.length||0);
+    const curLen = (DB.entries?.length||0) + (DB.pickups?.length||0) + (DB.users?.length||0);
+    if (newLen !== curLen) {
+      DB = fresh;
+      try { localStorage.setItem(LOCAL_KEY, JSON.stringify(DB)); } catch {}
+      renderCurrentScreen();
+      showSyncBar('✓ Updated', false);
+    }
+  } catch {}
+}, 30000);
+
+
+function showScreen(name) {
+  ['setup','login','forgot','register','app'].forEach(s => {
+    const el = document.getElementById(s+'-screen');
+    if (el) el.style.display = 'none';
+  });
+  const target = document.getElementById(name+'-screen');
+  if (target) target.style.display = name==='app' ? 'block' : 'flex';
+  if (name === 'login') {
+    const hosp = DB?.hospital?.name;
+    if (hosp) document.getElementById('login-hosp-name').textContent = `Sign in to ${hosp}`;
+  }
+  if (name === 'register') {
+    // reset form
+    ['reg-name','reg-email','reg-org','reg-dept','reg-pw','reg-pw2'].forEach(id => { const el=document.getElementById(id); if(el) el.value=''; });
+    const role = document.getElementById('reg-role'); if(role) role.value='';
+    document.getElementById('reg-form').style.display = 'block';
+    document.getElementById('reg-success').style.display = 'none';
+    document.getElementById('reg-err').classList.remove('show');
+  }
+}
+
+// ══════════════════════════════════════════════════════
+//  SETUP FLOW
+// ══════════════════════════════════════════════════════
+function goSetupStep(n) {
+  document.querySelectorAll('.setup-step').forEach(s => s.classList.remove('active'));
+  document.getElementById('setup-s'+n).classList.add('active');
+  for (let i=1; i<=3; i++) {
+    document.getElementById('sp'+i).style.background = i <= n ? '#2A6348' : '#DFD9D0';
+  }
+}
+
+function setupStep1() {
+  const name  = document.getElementById('s-hosp-name').value.trim();
+  const city  = document.getElementById('s-hosp-city').value.trim();
+  const email = document.getElementById('s-hosp-email').value.trim();
+  const err = document.getElementById('s1-err');
+  if (!name) { showErr(err, 'Hospital name is required'); return; }
+  if (!email || !email.includes('@')) { showErr(err, 'Enter a valid contact email'); return; }
+  err.classList.remove('show');
+  setupData.hospital = {name, city, email};
+  goSetupStep(2);
+  setTimeout(() => document.getElementById('s-admin-name').focus(), 100);
+}
+
+function setupStep2() {
+  const name = document.getElementById('s-admin-name').value.trim();
+  const email = document.getElementById('s-admin-email').value.trim();
+  const pw    = document.getElementById('s-admin-pw').value;
+  const pw2   = document.getElementById('s-admin-pw2').value;
+  const err   = document.getElementById('s2-err');
+  if (!name) { showErr(err, 'Full name is required'); return; }
+  if (!email || !email.includes('@')) { showErr(err, 'Enter a valid email address'); return; }
+  if (pw.length < 8) { showErr(err, 'Password must be at least 8 characters'); return; }
+  if (pw !== pw2) { showErr(err, 'Passwords do not match'); return; }
+  err.classList.remove('show');
+  setupData.admin = {name, email, pw};
+  // Show review
+  document.getElementById('setup-review').innerHTML = `
+    <div style="font-size:10px;color:#78746A;font-weight:700;margin-bottom:10px">SETUP SUMMARY</div>
+    ${[['Hospital',setupData.hospital.name],['Location',setupData.hospital.city||'—'],['Contact',setupData.hospital.email],['Admin Name',setupData.admin.name],['Admin Email',setupData.admin.email]].map(([k,v])=>`
+      <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:6px">
+        <span style="color:#78746A">${k}</span><strong>${v}</strong></div>`).join('')}`;
+  goSetupStep(3);
+}
+
+function finishSetup() {
+  const salt = genSalt();
+  const adminUser = {
+    id: 1, name: setupData.admin.name, email: setupData.admin.email,
+    role: 'Admin', dept: 'Administration', status: 'Active',
+    salt, pwHash: hashPw(setupData.admin.pw, salt),
+    createdAt: new Date().toISOString(), mustChangePw: false
+  };
+  const freshDB = {
+    hospital: setupData.hospital,
+    users: [adminUser],
+    pendingUsers: [],
+    entries: SEED_ENTRIES,
+    pickups: SEED_PICKUPS,
+    settings: {notifs:true,autoNotify:true,backup:true,audit:true},
+    nextId: 2000,
+    auditLog: [{ts: new Date().toISOString(), action:'System initialized', user: adminUser.name}]
+  };
+  saveDB(freshDB);
+  DB = freshDB;
+  toast('🚀 RePlate launched! Welcome, ' + adminUser.name);
+  currentUser = adminUser;
+  setSession(adminUser);
+  launchApp();
+}
+// ══════════════════════════════════════════════════════
+//  LOGIN
+// ══════════════════════════════════════════════════════
+function doLogin() {
+  const email = document.getElementById('l-email').value.trim();
+  const pw    = document.getElementById('l-pw').value;
+  const err   = document.getElementById('l-err');
+  const btn   = document.getElementById('l-btn');
+
+  err.classList.remove('show');
+  document.getElementById('lock-msg').style.display = 'none';
+
+  if (!email) { showErr(err,'Enter your email address'); shakeEl('l-email'); return; }
+  if (!pw)    { showErr(err,'Enter your password'); shakeEl('l-pw'); return; }
+
+  // Check lockout — auto-clear if admin has re-added the user since lockout was set
+  const lockUntil = isLocked(email);
+  if (lockUntil) {
+    const userExists = DB?.users?.find(u => u.email.toLowerCase() === email.toLowerCase() && u.status === 'Active');
+    if (userExists) {
+      clearLoginAttempts(email); // Admin re-created user — clear lockout
+    } else {
+      const mins = Math.ceil((lockUntil - Date.now()) / 60000);
+      document.getElementById('lock-msg').style.display = 'block';
+      document.getElementById('lock-text').textContent = `Too many failed attempts. Try again in ${mins} minute${mins>1?'s':''}.`;
+      return;
+    }
+  }
+
+  // Attempt auth
+  btn.textContent = 'Signing in…';
+  btn.disabled = true;
+
+  setTimeout(() => {
+    const user = authenticate(email, pw);
+    btn.textContent = 'Sign In';
+    btn.disabled = false;
+
+    if (!user) {
+      const att = recordFailedAttempt(email);
+      const remaining = MAX_ATTEMPTS - att.count;
+      if (remaining <= 0) {
+        document.getElementById('lock-msg').style.display = 'block';
+        document.getElementById('lock-text').textContent = `Account locked for 15 minutes due to too many failed attempts.`;
+        showErr(err, 'Account locked. Too many failed attempts.');
+      } else {
+        showErr(err, `Incorrect email or password. ${remaining} attempt${remaining>1?'s':''} remaining.`);
+        shakeEl('auth-box') || shakeEl('l-pw');
+      }
+      addAuditLog(`Failed login attempt for: ${email}`);
+      return;
+    }
+
+    // Success
+    clearLoginAttempts(email);
+    currentUser = user;
+    if (document.getElementById('l-remember').checked) {
+      setSession(user);
+    } else {
+      try { sessionStorage.setItem(SES_KEY, JSON.stringify({userId:user.id,role:user.role,ts:Date.now()})); } catch {}
+    }
+    addAuditLog(`Login: ${user.name} (${user.role})`);
+    launchApp();
+  }, 400);
+}
+
+function showForgot() { showScreen('forgot'); }
+function showLogin()  { showScreen('login'); }
+
+function submitRegistration() {
+  const name  = document.getElementById('reg-name').value.trim();
+  const email = document.getElementById('reg-email').value.trim();
+  const org   = document.getElementById('reg-org').value.trim();
+  const dept  = document.getElementById('reg-dept').value.trim();
+  const role  = document.getElementById('reg-role').value;
+  const pw    = document.getElementById('reg-pw').value;
+  const pw2   = document.getElementById('reg-pw2').value;
+  const err   = document.getElementById('reg-err');
+
+  if (!name)                        { showErr(err,'Full name is required'); return; }
+  if (!email||!email.includes('@')) { showErr(err,'Enter a valid work email'); return; }
+  if (!org)                         { showErr(err,'Organization name is required'); return; }
+  if (!role)                        { showErr(err,'Please select a role'); return; }
+  if (pw.length < 8)                { showErr(err,'Password must be at least 8 characters'); return; }
+  if (pw !== pw2)                   { showErr(err,'Passwords do not match'); return; }
+
+  // Check if email already registered or pending
+  const existing = DB?.users?.find(u => u.email.toLowerCase() === email.toLowerCase());
+  if (existing) { showErr(err,'This email is already registered. Please sign in.'); return; }
+  const pending = DB?.pendingUsers?.find(u => u.email.toLowerCase() === email.toLowerCase());
+  if (pending)  { showErr(err,'A request for this email is already pending admin approval.'); return; }
+
+  err.classList.remove('show');
+
+  // Store as pending user with hashed password
+  if (!DB.pendingUsers) DB.pendingUsers = [];
+  const salt = genSalt();
+  DB.pendingUsers.push({
+    id: DB.nextId++,
+    name, email, org, dept, role,
+    salt, pwHash: hashPw(pw, salt),
+    requestedAt: new Date().toISOString(),
+    status: 'Pending'
+  });
+  saveDB(DB);
+  addAuditLog(`Access request from: ${name} (${email}) — ${role} @ ${org}`);
+
+  // Show success
+  document.getElementById('reg-form').style.display = 'none';
+  document.getElementById('reg-summary').innerHTML =
+    [['Name',name],['Email',email],['Organization',org],['Role Requested',role],['Department',dept||'—']]
+    .map(([k,v])=>`<div style="display:flex;justify-content:space-between;margin-bottom:5px"><span style="color:#78746A">${k}</span><strong>${v}</strong></div>`).join('');
+  document.getElementById('reg-success').style.display = 'block';
+}
+
+function submitForgot() {
+  const email = document.getElementById('fp-email').value.trim();
+  const msg   = document.getElementById('fp-msg');
+  if (!email || !email.includes('@')) { msg.innerHTML = '<div class="alert alert-red"><span>⚠️</span><div>Enter a valid email address</div></div>'; msg.style.display='block'; return; }
+  const u = DB?.users.find(u=>u.email.toLowerCase()===email.toLowerCase());
+  msg.innerHTML = `<div class="alert alert-green"><span>✅</span><div>${u ? `Request sent to admin. They will reset the password for <strong>${email}</strong> and notify you.` : 'If this email exists in the system, a reset request has been logged.'}</div></div>`;
+  msg.style.display = 'block';
+  if (u) addAuditLog(`Password reset requested for: ${email}`);
+}
+
+// ══════════════════════════════════════════════════════
+//  CHANGE PASSWORD
+// ══════════════════════════════════════════════════════
+function changePassword() {
+  const old  = document.getElementById('cp-old').value;
+  const npw  = document.getElementById('cp-new').value;
+  const npw2 = document.getElementById('cp-new2').value;
+  const err  = document.getElementById('cp-err');
+
+  const hash = hashPw(old, currentUser.salt);
+  if (hash !== currentUser.pwHash) { showErr(err,'Current password is incorrect'); return; }
+  if (npw.length < 8) { showErr(err,'New password must be at least 8 characters'); return; }
+  if (npw !== npw2) { showErr(err,'New passwords do not match'); return; }
+
+  const newSalt = genSalt();
+  const user = DB.users.find(u=>u.id===currentUser.id);
+  if (user) { user.salt = newSalt; user.pwHash = hashPw(npw, newSalt); user.mustChangePw = false; }
+  currentUser.salt = newSalt;
+  currentUser.pwHash = hashPw(npw, newSalt);
+  saveDB(DB);
+  addAuditLog(`Password changed: ${currentUser.name}`);
+  closeModal('overlay-chpw');
+  toast('✅ Password updated successfully');
+}
+
+// ══════════════════════════════════════════════════════
+//  LAUNCH APP
+// ══════════════════════════════════════════════════════
+const ROLE_CFG = {
+  Staff:   {badge:'STAFF',   av:(u)=>initials(u), nav:['dashboard','log','reports','partner']},
+  Manager: {badge:'MANAGER', av:(u)=>initials(u), nav:['dashboard','reports','partner']},
+  Partner: {badge:'PARTNER', av:(u)=>initials(u), nav:['dashboard','partner']},
+  Admin:   {badge:'ADMIN',   av:(u)=>initials(u), nav:['dashboard','reports','partner','admin']},
+};
+const NAV_LBL = {dashboard:'Dashboard',log:'Log Waste',reports:'Reports',partner:'Partner',admin:'Admin'};
+const NAV_ICO = {
+  dashboard:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="19" height="19"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>',
+  log:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="19" height="19"><circle cx="12" cy="12" r="9"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>',
+  reports:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="19" height="19"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>',
+  partner:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="19" height="19"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>',
+  admin:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="19" height="19"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>',
+};
+const CAT_ICONS = {'Meat / Protein':'🍖','Rice / Grains':'🍚','Vegetables':'🥗','Plate Waste':'🍽️','Prepared Meals':'🍲','Dairy':'🥛','Bread / Bakery':'🍞','Mixed / Other':'🗑️'};
+
+function initials(u) { return (u.name||'?').split(' ').slice(0,2).map(w=>w[0]).join('').toUpperCase(); }
+
+function launchApp() {
+  const cfg = ROLE_CFG[currentUser.role];
+  document.getElementById('tb-role').textContent = cfg.badge;
+  document.getElementById('tb-avatar').textContent = initials(currentUser);
+  const hosp = DB.hospital?.name || 'RePlate';
+  document.querySelector('.tb-name').textContent = hosp.split(' ')[0];
+
+  // Build nav
+  const nav = document.getElementById('bnav');
+  nav.innerHTML = cfg.nav.map(id => `
+    <button class="ni" id="ni-${id}" onclick="navigate('${id}')">
+      ${NAV_ICO[id]}<span>${NAV_LBL[id]}</span>
+    </button>`).join('');
+
+  showScreen('app');
+  navigate('dashboard');
+
+  // Prompt password change if flagged
+  if (currentUser.mustChangePw) {
+    setTimeout(() => {
+      toast('⚠️ Please change your temporary password');
+      openModal('overlay-chpw');
+    }, 1000);
+  }
+}
+
+function navigate(screen) {
+  currentScreen = screen;
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.ni').forEach(n => n.classList.remove('active'));
+  const el = document.getElementById('s-'+screen);
+  if (el) { el.classList.add('active'); el.innerHTML = ''; renderScreen(screen, el); }
+  const ni = document.getElementById('ni-'+screen);
+  if (ni) ni.classList.add('active');
+  document.getElementById('content').scrollTop = 0;
+}
+function renderCurrentScreen() { if (currentScreen) navigate(currentScreen); }
+function renderScreen(n, el) {
+  el.classList.add('anim-fadeup');
+  if(n==='dashboard') renderDashboard(el);
+  else if(n==='log')     renderLog(el);
+  else if(n==='reports') renderReports(el);
+  else if(n==='partner') renderPartner(el);
+  else if(n==='admin')   renderAdmin(el);
+}
+
+function logout() {
+  clearSession();
+  addAuditLog(`Logout: ${currentUser?.name}`);
+  currentUser = null; currentScreen = '';
+  showScreen('login');
+  document.getElementById('l-email').value = '';
+  document.getElementById('l-pw').value = '';
+}
+
+// ══════════════════════════════════════════════════════
+//  PROFILE MODAL
+// ══════════════════════════════════════════════════════
+function openModal(id) {
+  if (id==='overlay-profile') buildProfileModal();
+  document.getElementById(id).classList.add('show');
+}
+function closeModal(id) { document.getElementById(id).classList.remove('show'); }
+
+function buildProfileModal() {
+  const u = currentUser;
+  document.getElementById('profile-content').innerHTML = `
+    <div style="text-align:center;margin-bottom:18px">
+      <div style="width:54px;height:54px;border-radius:50%;background:#E4F2EB;border:2px solid #2A6348;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;color:#2A6348;margin:0 auto 10px">${initials(u)}</div>
+      <div style="font-weight:700;font-size:15px">${u.name}</div>
+      <div style="font-size:11px;color:#78746A">${u.email}</div>
+      <div style="margin-top:6px"><span class="tag ${roleTagColor(u.role)}">${u.role}</span></div>
+    </div>
+    <div style="background:#EDEBE5;border-radius:9px;padding:12px 14px;margin-bottom:16px">
+      ${[['Department',u.dept||'—'],['Status',u.status],['Hospital',DB.hospital?.name||'—']].map(([k,v])=>`
+        <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:5px">
+          <span style="color:#78746A">${k}</span><strong>${v}</strong></div>`).join('')}
+    </div>
+    <button class="btn btn-o btn-full" style="margin-bottom:8px" onclick="closeModal('overlay-profile');openModal('overlay-chpw')">🔐 Change Password</button>
+    <button class="btn btn-danger btn-full" onclick="closeModal('overlay-profile');logout()">Sign Out</button>`;
+}
+
+function roleTagColor(r) {
+  return {Staff:'tag-green',Manager:'tag-gray',Partner:'tag-orange',Admin:'tag-red',Admin:'tag-purple'}[r]||'tag-gray';
+}
+
+// ══════════════════════════════════════════════════════
+//  HELPERS
+// ══════════════════════════════════════════════════════
+function makeCard(inner) { const d=document.createElement('div'); d.className='card'; d.innerHTML=inner||''; return d; }
+function tag(l,c='green') { return `<span class="tag tag-${c}">${l}</span>`; }
+function statusColor(s) { return s==='Completed'||s==='Approved'||s==='En Route'?'green':s==='Pending'?'yellow':s==='Cancelled'?'red':'gray'; }
+function roleTagColor2(r) { return {Staff:'green',Manager:'gray',Partner:'orange',Admin:'purple'}[r]||'gray'; }
+
+function showErr(el, msg) { el.textContent = msg; el.classList.add('show'); }
+function shakeEl(id) { const el=document.getElementById(id); if(el){el.classList.remove('anim-shake');void el.offsetWidth;el.classList.add('anim-shake');} }
+
+let toastTimer;
+function toast(msg) {
+  const el=document.getElementById('toast'); el.textContent=msg; el.classList.add('show');
+  clearTimeout(toastTimer); toastTimer=setTimeout(()=>el.classList.remove('show'),2800);
+}
+function showSyncBar(msg,warn=false) {
+  const b=document.getElementById('sync-bar'); b.textContent=msg; b.className='show'+(warn?' warn':'');
+  setTimeout(()=>b.className='',2000);
+}
+
+function togglePw(id, eye) {
+  const inp=document.getElementById(id);
+  inp.type = inp.type==='password'?'text':'password';
+  eye.textContent = inp.type==='password'?'👁':'🙈';
+}
+
+function checkStrength(pw, prefix) {
+  const bars = ['b1','b2','b3','b4'].map(b=>document.getElementById(prefix+'-'+b)||document.getElementById(b.replace('b','cp-b')));
+  const score = [pw.length>=8, /[A-Z]/.test(pw), /[0-9]/.test(pw), /[^a-zA-Z0-9]/.test(pw)].filter(Boolean).length;
+  const colors = ['','#B83025','#C4672F','#B07D10','#2A6348'];
+  const labels = ['','Weak','Fair','Good','Strong'];
+  bars.forEach((b,i)=>{ if(b) b.style.background = i<score ? colors[score] : '#DFD9D0'; });
+  const lbl = document.getElementById(prefix+'-lbl')||document.getElementById('s-strength-lbl');
+  if(lbl) lbl.textContent = pw.length?labels[score]:'Enter a password';
+}
+
+async function refreshFromCloud() {
+  const btn = document.getElementById('refresh-btn');
+  if (btn) btn.style.opacity = '0.4';
+  showSyncBar('⏳ Refreshing…', false);
+  try {
+    const res = await fetch(FB_URL, { cache: 'no-store' });
+    if (!res.ok) throw new Error();
+    const fresh = await res.json();
+    if (fresh && fresh.users) {
+      DB = fresh;
+      try { localStorage.setItem(LOCAL_KEY, JSON.stringify(DB)); } catch {}
+      renderCurrentScreen();
+      showSyncBar('✓ Data refreshed', false);
+    }
+  } catch {
+    showSyncBar('⚠️ Could not reach server', true);
+  }
+  if (btn) btn.style.opacity = '1';
+}
+
+function openNotifPanel() {
+  const panel = document.getElementById('notif-panel');
+  const list = document.getElementById('notif-list');
+  const notifs = buildNotifications();
+  list.innerHTML = notifs.map(n => `
+    <div class="np-item">
+      <div class="np-dot" style="background:${n.color}"></div>
+      <div><div class="np-text">${n.msg}</div><div class="np-time">${n.time}</div></div>
+    </div>`).join('') || '<div style="padding:16px;font-size:11px;color:#78746A;text-align:center">No new notifications</div>';
+  panel.classList.toggle('show');
+  // Close when clicking outside
+  setTimeout(() => document.addEventListener('click', function closePanel(e) {
+    if (!panel.contains(e.target) && !e.target.closest('.tb-bell')) { panel.classList.remove('show'); document.removeEventListener('click', closePanel); }
+  }), 100);
+}
+
+function buildNotifications() {
+  const notifs = [];
+  const todayStr = today(0);
+  const pendingPU = DB.pickups.filter(p=>p.status==='Pending');
+  const pendingReg = (DB.pendingUsers||[]).filter(u=>u.status==='Pending');
+  const wardBKg = DB.entries.filter(e=>e.dept==='Ward B'&&e.date===todayStr).reduce((s,e)=>s+Number(e.kg),0);
+  if (currentUser.role==='Admin' && pendingReg.length>0)
+    notifs.push({color:'#C4672F', msg:'👤 '+pendingReg.length+' access request'+(pendingReg.length>1?'s':'')+' awaiting your approval', time:'Admin Panel → Access Requests'});
+  if (wardBKg > 20) notifs.push({color:'#B83025', msg:'⚠️ High waste in Ward B — '+wardBKg+' kg logged today', time:'Today'});
+  pendingPU.forEach(p => notifs.push({color:'#B07D10', msg:'🚛 Pickup '+p.id+' awaiting confirmation from '+p.partner, time:p.date}));
+  const recent = DB.entries.slice(0,2);
+  recent.forEach(e => notifs.push({color:'#2A6348', msg:'✅ '+e.user+' logged '+e.kg+'kg '+e.category+' — '+e.dept, time:e.date+' '+e.time}));
+  const dot = document.querySelector('.tb-dot');
+  if (dot) dot.style.display = notifs.length > 0 ? 'block' : 'none';
+  return notifs;
+}
+
+function addAuditLog(action) {
+  if (!DB) return;
+  if (!DB.auditLog) DB.auditLog = [];
+  DB.auditLog.unshift({ts:new Date().toISOString(),action,user:currentUser?.name||'system'});
+  if (DB.auditLog.length > 200) DB.auditLog = DB.auditLog.slice(0,200);
+  saveDB(DB);
+}
+
+function getFiltered() {
+  const now=new Date();
+  return DB.entries.filter(e=>{
+    const d=new Date(e.date);
+    const inR = reportFilters.range==='This Week'?(now-d)<7*86400000
+               :reportFilters.range==='This Month'?d.getMonth()===now.getMonth()&&d.getFullYear()===now.getFullYear()
+               :true;
+    return inR&&(reportFilters.dept==='All'||e.dept===reportFilters.dept)&&(reportFilters.cat==='All'||e.category.includes(reportFilters.cat)||reportFilters.cat.includes(e.category.split('/')[0].trim()));
+  });
+}
+
+function weekChart(entries) {
+  const days=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  const data=Array.from({length:7},(_,i)=>{
+    const d=new Date(); d.setDate(d.getDate()-(6-i));
+    const ds=d.toISOString().slice(0,10);
+    const v=entries.filter(e=>e.date===ds).reduce((s,e)=>s+Number(e.kg),0);
+    return{l:days[d.getDay()],v};
+  });
+  const max=Math.max(...data.map(d=>d.v),1);
+  return data.map(d=>({...d,hi:d.v===max&&max>0}));
+}
+
+function buildBarChart(data) {
+  const max=Math.max(...data.map(d=>d.v),1);
+  const div=document.createElement('div'); div.className='barchart';
+  data.forEach(d=>{
+    const h=Math.max(d.v>0?(d.v/max)*62:0,d.v>0?3:0);
+    div.innerHTML+=`<div class="bc-col"><div class="bc-bar" style="height:${h}px;background:${d.hi?'#C4672F':'#2A6348'};opacity:.7" title="${d.v} kg" onmouseenter="this.style.opacity=1" onmouseleave="this.style.opacity=.7"></div><div class="bc-lbl">${d.l}</div></div>`;
+  });
+  return div;
+}
+
+// ══════════════════════════════════════════════════════
+//  DASHBOARD
+// ══════════════════════════════════════════════════════
+function renderDashboard(el) {
+  const todayStr=today(0);
+  const todayE=DB.entries.filter(e=>e.date===todayStr);
+  const todayKg=todayE.reduce((s,e)=>s+Number(e.kg),0);
+  const pending=DB.pickups.filter(p=>p.status==='Pending').length;
+  const weekE=DB.entries.filter(e=>(new Date()-new Date(e.date))<7*86400000);
+  const weekKg=weekE.reduce((s,e)=>s+Number(e.kg),0);
+  const role=currentUser.role;
+  const hour=new Date().getHours();
+  const isEmpty = DB.entries.length === 0;
+
+  el.innerHTML=`
+    <div style="font-size:19px;font-weight:700;letter-spacing:-.4px;margin-bottom:2px">
+      ${role==='Staff'?`${hour<12?'Good morning':'Good afternoon'} 👋`:role==='Manager'?'Manager Dashboard 📊':role==='Partner'?'Partner Overview 🚛':'System Overview ⚙️'}
+    </div>
+    <div style="font-size:11px;color:#78746A;margin-bottom:3px">
+      <span class="live-dot"></span>${new Date().toLocaleDateString('en-GB',{weekday:'long',year:'numeric',month:'long',day:'numeric'})}
+    </div>
+    <div style="font-size:11px;color:#78746A;margin-bottom:16px">${DB.hospital?.name||''}</div>`;
+
+  // Empty state welcome card
+  if(isEmpty && role !== 'Partner') {
+    const wc = makeCard(`
+      <div style="text-align:center;padding:20px 8px 12px">
+        <div style="font-size:38px;margin-bottom:10px">🏥</div>
+        <div style="font-size:15px;font-weight:700;margin-bottom:6px">Welcome to RePlate!</div>
+        <div style="font-size:11px;color:#78746A;line-height:1.7;margin-bottom:18px">
+          Your dashboard is ready. Start by logging waste entries or adding users from the Admin panel. Data will appear here automatically.
+        </div>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          ${role==='Staff'?`<button class="btn btn-p btn-full" onclick="navigate('log')">＋ Log First Waste Entry</button>`:''}
+          ${role==='Admin'?`<button class="btn btn-p btn-full" onclick="navigate('admin')">⚙️ Go to Admin Panel</button><button class="btn btn-o btn-full" style="margin-top:0" onclick="navigate('reports')">📊 View Reports</button>`:''}
+          ${role==='Manager'?`<button class="btn btn-p btn-full" onclick="navigate('reports')">📊 View Reports</button>`:''}
+        </div>
+      </div>
+      <div style="background:#F7F5F0;border-radius:9px;padding:12px 14px;margin-top:8px">
+        <div style="font-size:10px;font-weight:700;color:#78746A;letter-spacing:.5px;margin-bottom:8px">GETTING STARTED</div>
+        ${[
+          ['1','Admin adds users','Go to Admin → Users → Add staff, managers, and partner accounts'],
+          ['2','Staff log waste','Staff tap Log Waste after each meal service or preparation'],
+          ['3','Request pickups','Create pickup requests to notify your waste partner'],
+          ['4','Track & export','View trends in Reports and export CSV for compliance'],
+        ].map(([n,t,d])=>`<div style="display:flex;gap:10px;margin-bottom:9px;align-items:flex-start">
+          <div style="width:20px;height:20px;background:#2A6348;color:#fff;border-radius:50%;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px">${n}</div>
+          <div><div style="font-size:11px;font-weight:600">${t}</div><div style="font-size:10px;color:#78746A">${d}</div></div>
+        </div>`).join('')}
+      </div>`);
+    el.appendChild(wc);
+    return; // Skip stats/chart when empty
+  }
+
+  // Stats
+  const stats=document.createElement('div'); stats.className='stat-row';
+  if(role==='Partner'){
+    const comp=DB.pickups.filter(p=>p.status==='Completed').length;
+    const collKg=DB.pickups.filter(p=>p.status==='Completed').reduce((s,p)=>s+Number(p.estKg),0);
+    stats.innerHTML=`<div class="sbox"><div class="n c-orange">${pending}</div><div class="l">New Requests</div></div>
+    <div class="sbox"><div class="n c-green">${comp}</div><div class="l">Completed</div></div>
+    <div class="sbox"><div class="n c-blue">${collKg}</div><div class="l">kg Collected</div></div>`;
+  } else {
+    stats.innerHTML=`<div class="sbox"><div class="n ${todayKg>150?'c-red':'c-orange'}">${todayKg}</div><div class="l">kg Today</div></div>
+    <div class="sbox"><div class="n c-green">${todayE.length}</div><div class="l">Entries Today</div></div>
+    <div class="sbox"><div class="n ${pending>0?'c-orange':'c-green'}">${pending}</div><div class="l">Pending Pickups</div></div>`;
+  }
+  el.appendChild(stats);
+
+  // Chart
+  if(role!=='Partner'){
+    const cc=makeCard(''); cc.innerHTML='<div class="card-hd">📈 Weekly Waste Trend (kg)</div>';
+    cc.appendChild(buildBarChart(weekChart(DB.entries)));
+    cc.innerHTML+=`<div style="font-size:10px;color:#78746A;margin-top:4px">Total this week: <strong>${weekKg.toFixed(1)} kg</strong> · ${weekE.length} entries</div>`;
+    el.appendChild(cc);
+
+  }
+
+  // Alerts
+  const ac=makeCard(''); ac.innerHTML='<div class="card-hd">⚠️ Active Alerts</div>';
+  const wardBKg=DB.entries.filter(e=>e.dept==='Ward B'&&e.date===todayStr).reduce((s,e)=>s+Number(e.kg),0);
+  if(wardBKg>20) ac.innerHTML+=`<div class="alert alert-red"><span style="flex-shrink:0">🔴</span><div><strong>High waste in Ward B</strong> — ${wardBKg} kg today</div></div>`;
+  if(pending>0) ac.innerHTML+=`<div class="alert alert-yellow"><span style="flex-shrink:0">🟠</span><div><strong>${pending} pickup${pending>1?'s':''} awaiting confirmation</strong> — Check partner coordination</div></div>`;
+  ac.innerHTML+=`<div class="alert alert-green"><span style="flex-shrink:0">🟢</span><div><strong>System healthy</strong> — All data synced</div></div>`;
+  el.appendChild(ac);
+
+  // Recent
+  if(role!=='Partner'){
+    const rc=makeCard('');
+    rc.innerHTML=`<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px"><h2 style="font-size:14px;font-weight:600">Recent Entries</h2><span class="tag tag-green"><span class="live-dot" style="width:5px;height:5px;margin-right:3px"></span>Live</span></div>`;
+    const recent=[...DB.entries].sort((a,b)=>b.id-a.id).slice(0,4);
+    if(!recent.length) rc.innerHTML+=`<div style="text-align:center;padding:28px 12px">
+      <div style="font-size:32px;margin-bottom:10px">📋</div>
+      <div style="font-size:13px;font-weight:600;margin-bottom:4px">No waste entries yet</div>
+      <div style="font-size:11px;color:#78746A;margin-bottom:14px">Start logging food waste to see data here.</div>
+      ${currentUser.role==='Staff'?`<button class="btn btn-p btn-sm" onclick="navigate('log')">＋ Log First Entry</button>`:'<div style="font-size:11px;color:#78746A">Ask staff to log waste entries.</div>'}
+    </div>`;
+    recent.forEach(e=>{ rc.innerHTML+=`<div class="li"><div class="li-l"><div class="li-ic">${CAT_ICONS[e.category]||'🗑️'}</div><div><div class="li-title">${e.dept} — ${e.category}</div><div class="li-sub">${e.date} ${e.time} · ${e.reason}</div></div></div><strong style="font-size:13px;flex-shrink:0;margin-left:8px">${e.kg} kg</strong></div>`; });
+    el.appendChild(rc);
+  }
+
+  // Quick actions
+  if(role==='Staff'){
+    const qa=document.createElement('div'); qa.className='btn-2col'; qa.style.marginTop='4px';
+    qa.innerHTML=`<button class="btn btn-p btn-full" onclick="navigate('log')">＋ Log Waste</button><button class="btn btn-o btn-full" onclick="navigate('partner')">🚛 Request Pickup</button>`;
+    el.appendChild(qa);
+  }
+  if(role==='Manager') {
+    const qa=document.createElement('button'); qa.className='btn btn-p btn-full'; qa.textContent='View Full Reports →'; qa.onclick=()=>navigate('reports');
+    el.appendChild(qa);
+  }
+}
+
+// ══════════════════════════════════════════════════════
+//  LOG WASTE
+// ══════════════════════════════════════════════════════
+function resetLogForm() { logStep=1; logForm={dept:'Kitchen A',category:'',kg:'',stage:'Production (cooking surplus)',reason:'Overproduction',notes:'',pickup:false}; }
+
+function renderLog(el) {
+  if(logStep===1&&!logForm.dept) resetLogForm();
+  el.innerHTML=`<div style="font-size:19px;font-weight:700;letter-spacing:-.4px;margin-bottom:3px">Log Food Waste</div>
+  <div style="font-size:11px;color:#78746A;margin-bottom:18px">${logForm.dept||'Kitchen A'} · ${new Date().toLocaleDateString('en-GB')} · ${new Date().toTimeString().slice(0,5)}</div>`;
+  // Steps indicator
+  const sd=document.createElement('div'); sd.className='steps';
+  for(let i=1;i<=3;i++){
+    const dot=document.createElement('div');
+    dot.className='step-dot '+(i<logStep||logStep===3?'done':i===logStep?'active':'pending');
+    dot.textContent=i<logStep||logStep===3?'✓':i; sd.appendChild(dot);
+    if(i<3){const l=document.createElement('div');l.className='step-line '+(i<logStep||logStep===3?'done':'pending');sd.appendChild(l);}
+  }
+  el.appendChild(sd);
+  if(logStep===1) renderLogStep1(el);
+  else if(logStep===2) renderLogStep2(el);
+  else renderLogSuccess(el);
+}
+
+function renderLogStep1(el){
+  const c=makeCard(`<div class="card-hd">Step 1 — Waste Details</div>
+  <div class="fc-2">
+    <div class="fg"><label class="fl">Department <span style="color:#B83025">*</span></label>
+      <select class="fc" id="lf-dept">${['Kitchen A','Kitchen B','Ward B','Ward C (ICU)','Storage','Staff Canteen'].map(d=>`<option${logForm.dept===d?' selected':''}>${d}</option>`).join('')}</select></div>
+    <div class="fg"><label class="fl">Date &amp; Time</label>
+      <input class="fc readonly" value="${new Date().toLocaleDateString('en-GB')} · ${new Date().toTimeString().slice(0,5)}" readonly></div>
+  </div>
+  <div class="fc-2">
+    <div class="fg"><label class="fl">Category <span style="color:#B83025">*</span></label>
+      <select class="fc" id="lf-cat"><option value="">Select…</option>${['🍖 Meat / Protein','🍚 Rice / Grains','🥗 Vegetables','🍲 Prepared Meals','🥛 Dairy','🍞 Bread / Bakery','🍽️ Plate Waste','🗑️ Mixed / Other'].map(c=>`<option${logForm.category===c?' selected':''}>${c}</option>`).join('')}</select></div>
+    <div class="fg"><label class="fl">Amount (kg) <span style="color:#B83025">*</span></label>
+      <input class="fc" id="lf-kg" type="number" placeholder="e.g. 12.5" min="0.1" step="0.5" value="${logForm.kg||''}"></div>
+  </div>
+  <div class="fg"><label class="fl">Stage of Generation</label>
+    <select class="fc" id="lf-stage">${['Preparation (trimming/peeling)','Production (cooking surplus)','Service (unserved meals)','Patient Return (plate waste)','Storage / Expired'].map(s=>`<option${logForm.stage===s?' selected':''}>${s}</option>`).join('')}</select></div>`);
+  el.appendChild(c);
+  const b=document.createElement('button'); b.className='btn btn-p btn-full'; b.textContent='Continue →';
+  b.onclick=()=>{
+    logForm.dept=document.getElementById('lf-dept').value;
+    logForm.category=document.getElementById('lf-cat').value;
+    logForm.kg=document.getElementById('lf-kg').value;
+    logForm.stage=document.getElementById('lf-stage').value;
+    if(!logForm.category){toast('⚠️ Please select a waste category');shakeEl('lf-cat');return;}
+    if(!logForm.kg||Number(logForm.kg)<=0){toast('⚠️ Please enter a valid amount');shakeEl('lf-kg');return;}
+    logStep=2; navigate('log');
+  };
+  el.appendChild(b);
+}
+
+function renderLogStep2(el){
+  const c=makeCard(`<div class="card-hd">Step 2 — Reason &amp; Notes</div>
+  <div class="fg"><label class="fl">Primary Reason</label>
+    <select class="fc" id="lf-reason">${['Overproduction','Patient discharge / diet change','Expired / past best before','Unserved meals','Preparation waste','Other'].map(r=>`<option${logForm.reason===r?' selected':''}>${r}</option>`).join('')}</select></div>
+  <div class="fg"><label class="fl">Notes (optional)</label>
+    <textarea class="fc" id="lf-notes" rows="3" placeholder="e.g. Unexpected patient discharges…">${logForm.notes||''}</textarea></div>
+  <div class="fg"><label class="fl">Request partner pickup?</label>
+    <div style="display:flex;gap:8px;margin-top:6px">
+      <button class="btn btn-sm ${logForm.pickup?'btn-p':'btn-o'}" id="pu-yes" onclick="logForm.pickup=true;document.getElementById('pu-yes').className='btn btn-sm btn-p';document.getElementById('pu-no').className='btn btn-sm btn-o'">✓ Yes</button>
+      <button class="btn btn-sm ${!logForm.pickup?'btn-p':'btn-o'}" id="pu-no" onclick="logForm.pickup=false;document.getElementById('pu-no').className='btn btn-sm btn-p';document.getElementById('pu-yes').className='btn btn-sm btn-o'">✗ Internal disposal</button>
+    </div></div>`);
+  el.appendChild(c);
+  const btns=document.createElement('div'); btns.className='btn-2col';
+  btns.innerHTML=`<button class="btn btn-o btn-full" onclick="logStep=1;navigate('log')">← Back</button>`;
+  const sb=document.createElement('button'); sb.className='btn btn-p btn-full'; sb.textContent='Submit Entry ✓';
+  sb.onclick=()=>{
+    logForm.reason=document.getElementById('lf-reason')?.value||logForm.reason;
+    logForm.notes=document.getElementById('lf-notes')?.value||'';
+    const entry={id:DB.nextId++,dept:logForm.dept,category:logForm.category.replace(/^[^\w]+\s*/,''),kg:Number(logForm.kg),stage:logForm.stage,reason:logForm.reason,notes:logForm.notes,pickup:logForm.pickup,date:today(0),time:nowTime(),user:currentUser.name};
+    DB.entries.unshift(entry);
+    addAuditLog(`Waste logged: ${entry.kg}kg ${entry.category} — ${entry.dept}`);
+    saveDB(DB);
+    logStep=3; navigate('log');
+    toast('✅ Entry saved!');
+    showSyncBar('✓ Entry synced',false);
+  };
+  btns.appendChild(sb); el.appendChild(btns);
+}
+
+function renderLogSuccess(el){
+  const e=DB.entries[0];
+  const c=makeCard(`<div style="text-align:center;padding:24px 12px 16px">
+    <div style="width:60px;height:60px;background:#E4F2EB;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;font-size:28px">✅</div>
+    <h3 style="font-size:16px;font-weight:700;margin-bottom:6px">Waste Logged Successfully</h3>
+    <p style="font-size:12px;color:#78746A;line-height:1.7"><strong>${e?.kg} kg</strong> of <strong>${e?.category}</strong> from <strong>${e?.dept}</strong> at ${e?.time}.${logForm.pickup?' Pickup request sent to GreenCo.':''}</p></div>
+    <div style="background:#EDEBE5;border-radius:9px;padding:12px 14px;margin:4px 0 8px">
+      <div style="font-size:10px;color:#78746A;font-weight:700;margin-bottom:8px">ENTRY SUMMARY</div>
+      ${[['Department',e?.dept],['Category',e?.category],['Amount',e?.kg+' kg'],['Stage',e?.stage],['Reason',e?.reason],['Logged by',e?.user],['Time',e?.date+' '+e?.time]].map(([k,v])=>`<div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:5px"><span style="color:#78746A">${k}</span><strong>${v}</strong></div>`).join('')}
+    </div>`);
+  el.appendChild(c);
+  const b=document.createElement('button'); b.className='btn btn-p btn-full'; b.textContent='＋ Log Another Entry';
+  b.onclick=()=>{resetLogForm();navigate('log');}; el.appendChild(b);
+}
+
+// ══════════════════════════════════════════════════════
+//  REPORTS
+// ══════════════════════════════════════════════════════
+function renderReports(el){
+  el.innerHTML=`<div style="font-size:19px;font-weight:700;letter-spacing:-.4px;margin-bottom:3px">Reports</div>
+  <div style="font-size:11px;color:#78746A;margin-bottom:18px">Waste data &amp; compliance exports</div>`;
+  const allDepts=['All',...new Set(DB.entries.map(e=>e.dept))];
+  const allCats=['All',...new Set(DB.entries.map(e=>e.category))];
+  const fc=makeCard(`<div class="card-hd">Filters</div>
+  <div class="fc-2">
+    <div class="fg"><label class="fl">Date Range</label><select class="fc" onchange="reportFilters.range=this.value;navigate('reports')">${['This Week','This Month','All Time'].map(r=>`<option${reportFilters.range===r?' selected':''}>${r}</option>`).join('')}</select></div>
+    <div class="fg"><label class="fl">Department</label><select class="fc" onchange="reportFilters.dept=this.value;navigate('reports')">${allDepts.map(d=>`<option${reportFilters.dept===d?' selected':''}>${d}</option>`).join('')}</select></div>
+  </div>
+  <div class="fg"><label class="fl">Category</label><select class="fc" onchange="reportFilters.cat=this.value;navigate('reports')">${allCats.map(c=>`<option${reportFilters.cat===c?' selected':''}>${c}</option>`).join('')}</select></div>`);
+  el.appendChild(fc);
+
+  const filtered=getFiltered();
+  const totalKg=filtered.reduce((s,e)=>s+Number(e.kg),0);
+  const deptTop=[...new Set(DB.entries.map(e=>e.dept))].map(d=>({d,v:filtered.filter(e=>e.dept===d).reduce((s,e)=>s+Number(e.kg),0)})).sort((a,b)=>b.v-a.v)[0];
+  const catTop=[...new Set(DB.entries.map(e=>e.category))].map(c=>({c,v:filtered.filter(e=>e.category===c).reduce((s,e)=>s+Number(e.kg),0)})).sort((a,b)=>b.v-a.v)[0];
+
+  const sr=document.createElement('div'); sr.className='stat-row';
+  sr.innerHTML=`<div class="sbox"><div class="n c-red">${totalKg.toFixed(0)}</div><div class="l">Total kg</div></div>
+  <div class="sbox"><div class="n c-orange" style="font-size:13px">${(deptTop?.d||'—').split(' ').slice(0,2).join(' ')}</div><div class="l">Top Dept</div></div>
+  <div class="sbox"><div class="n c-green" style="font-size:13px">${(catTop?.c||'—').split(' / ')[0].trim()}</div><div class="l">Top Category</div></div>`;
+  el.appendChild(sr);
+
+  const cc=makeCard(''); cc.innerHTML='<div class="card-hd">Weekly Chart (kg)</div>';
+  cc.appendChild(buildBarChart(weekChart(filtered)));
+  cc.innerHTML+=`<div style="font-size:10px;color:#78746A;margin-top:4px">${filtered.length} entries · ${totalKg.toFixed(1)} kg</div>`;
+  el.appendChild(cc);
+
+  const sorted=[...filtered].sort((a,b)=>{let av=a[sortCol],bv=b[sortCol];if(sortCol==='kg'){av=Number(av);bv=Number(bv);}return sortDir==='asc'?(av>bv?1:-1):(av<bv?1:-1);});
+  const tc=makeCard('');
+  tc.innerHTML=`<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px"><h2 style="font-size:14px;font-weight:600">Waste Log Table</h2><span class="tag tag-gray">${filtered.length} entries</span></div>`;
+  const wrap=document.createElement('div'); wrap.style.overflowX='auto';
+  wrap.innerHTML=`<table class="dt"><thead><tr>${[['date','Date'],['dept','Dept'],['category','Category'],['kg','kg'],['reason','Reason']].map(([k,l])=>`<th onclick="sortCol='${k}';sortDir=sortDir==='asc'?'desc':'asc';navigate('reports')">${l}${sortCol===k?(sortDir==='asc'?' ↑':' ↓'):''}</th>`).join('')}<th>User</th></tr></thead>
+  <tbody>${sorted.slice(0,15).map(e=>`<tr><td style="font-family:monospace;font-size:10px">${e.date.slice(5)} ${e.time}</td><td>${e.dept.split(' ').slice(0,2).join(' ')}</td><td>${e.category}</td><td style="font-weight:700">${e.kg}</td><td style="color:#78746A">${e.reason}</td><td style="color:#78746A">${e.user}</td></tr>`).join('')}
+  ${!filtered.length?'<tr><td colspan="6" style="text-align:center;padding:20px;color:#78746A">No entries match filters</td></tr>':''}</tbody></table>`;
+  tc.appendChild(wrap);
+  if(filtered.length>15) tc.innerHTML+=`<div style="font-size:10px;color:#78746A;text-align:center;margin-top:8px">Showing 15 of ${filtered.length}</div>`;
+  el.appendChild(tc);
+
+  const exp=document.createElement('div'); exp.className='btn-2col';
+  exp.innerHTML=`<button class="btn btn-p btn-full" onclick="exportCSV()">⬇ Export CSV</button><button class="btn btn-o btn-full" onclick="window.print()">🖨️ Print</button>`;
+  el.appendChild(exp);
+}
+
+function exportCSV(){
+  const f=getFiltered();
+  const rows=f.map(e=>[e.date,e.time,e.dept,e.category,e.kg,e.stage,e.reason,e.notes,e.user].map(v=>`"${v}"`).join(','));
+  const csv='Date,Time,Department,Category,kg,Stage,Reason,Notes,User\n'+rows.join('\n');
+  const a=document.createElement('a');
+  a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(csv);
+  a.download='RePlate_WasteLog_'+today(0)+'.csv'; a.click();
+  toast('📊 CSV exported!');
+  addAuditLog('CSV export by '+currentUser.name);
+}
+
+// ══════════════════════════════════════════════════════
+//  PARTNER
+// ══════════════════════════════════════════════════════
+function renderPartner(el){
+  if(currentUser.role==='Partner'){
+    el.innerHTML=`<div style="font-size:19px;font-weight:700;letter-spacing:-.4px;margin-bottom:3px">Pickup Requests</div><div style="font-size:11px;color:#78746A;margin-bottom:18px">View &amp; update hospital pickup requests</div>`;
+    const c=makeCard('<div class="card-hd">Incoming Requests — '+DB.hospital?.name+'</div>');
+    if(!DB.pickups.length) c.innerHTML+=`<div style="text-align:center;padding:28px 12px">
+      <div style="font-size:32px;margin-bottom:10px">🚛</div>
+      <div style="font-size:13px;font-weight:600;margin-bottom:4px">No pickup requests yet</div>
+      <div style="font-size:11px;color:#78746A">The hospital hasn't submitted any requests. Check back soon.</div>
+    </div>`;
+    DB.pickups.forEach(p=>{
+      c.innerHTML+=`<div style="padding:12px 0;border-bottom:1px solid #DFD9D0">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px"><div style="font-weight:700;font-size:12px">${p.id}</div>${tag(p.status,statusColor(p.status))}</div>
+        <div style="font-size:11px;color:#78746A;margin-bottom:10px">${p.date} · Est. ${p.estKg} kg · ${p.type}</div>
+        <div style="display:flex;gap:7px;flex-wrap:wrap">
+          ${p.status==='Pending'?`<button class="btn btn-p btn-sm" onclick="updPU('${p.id}','Approved')">✓ Accept</button><button class="btn btn-o btn-sm" onclick="updPU('${p.id}','Cancelled')">✗ Decline</button>`:''}
+          ${p.status==='Approved'?`<button class="btn btn-p btn-sm" onclick="updPU('${p.id}','En Route')">🚛 En Route</button>`:''}
+          ${p.status==='En Route'?`<button class="btn btn-p btn-sm" onclick="updPU('${p.id}','Completed')">✅ Complete</button>`:''}
+        </div>
+        ${p.notes?`<div style="font-size:10px;color:#78746A;margin-top:5px">${p.notes}</div>`:''}
+      </div>`;
+    });
+    el.appendChild(c);
+  } else {
+    el.innerHTML=`<div style="font-size:19px;font-weight:700;letter-spacing:-.4px;margin-bottom:3px">Partner Coordination</div><div style="font-size:11px;color:#78746A;margin-bottom:18px">Manage pickup requests</div>`;
+    const c=makeCard('');
+    c.innerHTML=`<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px"><h2 style="font-size:14px;font-weight:600">Pickup Requests</h2><button class="btn btn-p btn-sm" onclick="openModal('overlay-pickup')">＋ New Request</button></div>`;
+    if(!DB.pickups.length) c.innerHTML+=`<div style="text-align:center;padding:28px 12px">
+      <div style="font-size:32px;margin-bottom:10px">🚛</div>
+      <div style="font-size:13px;font-weight:600;margin-bottom:4px">No pickup requests yet</div>
+      <div style="font-size:11px;color:#78746A;margin-bottom:14px">Create a request to notify your waste partner.</div>
+      <button class="btn btn-p btn-sm" onclick="openModal('overlay-pickup')">＋ Create First Request</button>
+    </div>`;
+    DB.pickups.forEach(p=>{
+      const canCancel = (p.status === 'Pending');
+      c.innerHTML+=`<div style="padding:11px 0;border-bottom:1px solid #DFD9D0">
+        <div class="li" style="padding:0;border:none">
+          <div class="li-l">
+            <div class="li-ic">🚛</div>
+            <div>
+              <div class="li-title">${p.id} · ${p.partner}</div>
+              <div class="li-sub">${p.date} · ${p.estKg} kg · ${p.type}</div>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;gap:6px">
+            ${tag(p.status,statusColor(p.status))}
+            ${canCancel ? `<button class="btn btn-danger btn-sm" style="padding:4px 9px;font-size:10px" onclick="cancelSpecificPickup('${p.id}')">Cancel</button>` : ''}
+          </div>
+        </div>
+        ${p.notes ? `<div style="font-size:10px;color:#78746A;margin-top:4px;padding-left:43px">${p.notes}</div>` : ''}
+      </div>`;
+    });
+    el.appendChild(c);
+    const lastPartner = DB.pickups[0]?.partner || 'partner';
+    const nc=makeCard(`<div class="card-hd">📣 Notification Status</div>
+    <div class="alert alert-green"><span>🟢</span><div><strong>${lastPartner} last notified</strong> — Latest request sent. Awaiting confirmation.</div></div>
+    <div style="margin-top:8px">
+      <button class="btn btn-o btn-sm btn-full" onclick="toast('📧 Reminder sent to ${lastPartner}')">Send Reminder</button>
+    </div>`);
+    el.appendChild(nc);
+  }
+}
+
+function updPU(id,status){
+  const p=DB.pickups.find(p=>p.id===id);
+  if(p){p.status=status;saveDB(DB);addAuditLog(`Pickup ${id} → ${status} by ${currentUser.name}`);}
+  navigate('partner'); toast(`Pickup ${id} updated to "${status}"`);
+}
+function cancelSpecificPickup(id) {
+  if (!confirm('Cancel pickup request ' + id + '? This cannot be undone.')) return;
+  const p = DB.pickups.find(p => p.id === id);
+  if (p) {
+    p.status = 'Cancelled';
+    saveDB(DB);
+    addAuditLog('Pickup ' + id + ' cancelled by ' + currentUser.name);
+    navigate('partner');
+    toast('Request ' + id + ' cancelled');
+  }
+}
+
+function cancelPending(){
+  const p=DB.pickups.find(p=>p.status==='Pending');
+  if(p){p.status='Cancelled';saveDB(DB);navigate('partner');toast('Request cancelled');}
+  else toast('No pending requests');
+}
+function submitPickup(){
+  const kg=document.getElementById('pu-kg').value;
+  if(!kg||Number(kg)<=0){toast('⚠️ Enter a valid weight');return;}
+  const id='R-'+(100+DB.pickups.length+1);
+  DB.pickups.unshift({id,partner:document.getElementById('pu-partner').value,estKg:Number(kg),type:document.getElementById('pu-type').value,date:document.getElementById('pu-date').value||today(0),status:'Pending',notes:document.getElementById('pu-notes').value});
+  saveDB(DB); addAuditLog(`Pickup request created: ${id}`);
+  closeModal('overlay-pickup'); navigate('partner'); toast(`🚛 Request ${id} sent to partner`);
+}
+
+// ══════════════════════════════════════════════════════
+//  ADMIN
+// ══════════════════════════════════════════════════════
+function renderAdmin(el){
+  el.innerHTML=`<div style="font-size:19px;font-weight:700;letter-spacing:-.4px;margin-bottom:3px">Admin Panel</div>
+  <div style="font-size:11px;color:#78746A;margin-bottom:18px">Users, system &amp; security</div>`;
+
+  const sr=document.createElement('div'); sr.className='stat-row';
+  const pending = (DB.pendingUsers||[]).filter(u=>u.status==='Pending');
+  sr.innerHTML=`<div class="sbox"><div class="n c-green">${DB.users.filter(u=>u.status==='Active').length}</div><div class="l">Active Users</div></div>
+  <div class="sbox"><div class="n ${pending.length>0?'c-orange':'c-muted'}">${pending.length}</div><div class="l">Pending Requests</div></div>
+  <div class="sbox"><div class="n c-blue">${DB.entries.length}</div><div class="l">Total Entries</div></div>`;
+  el.appendChild(sr);
+
+  // ── PENDING ACCESS REQUESTS ──
+  if (pending.length > 0) {
+    const pc = makeCard('');
+    pc.innerHTML = `<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+      <h2 style="font-size:14px;font-weight:600">🔔 Access Requests</h2>
+      <span class="tag tag-orange">${pending.length} pending</span></div>`;
+    pending.forEach(u => {
+      const row = document.createElement('div');
+      row.style.cssText = 'padding:12px 0;border-bottom:1px solid #DFD9D0';
+      row.innerHTML = `
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:8px">
+          <div>
+            <div style="font-weight:600;font-size:13px">${u.name}</div>
+            <div style="font-size:10px;color:#78746A">${u.email}</div>
+            <div style="font-size:10px;color:#78746A;margin-top:2px">${u.org} · ${u.dept||'No dept'} · Requested: ${new Date(u.requestedAt).toLocaleDateString('en-GB')}</div>
+          </div>
+          ${tag(u.role, roleTagColor2(u.role))}
+        </div>
+        <div style="display:flex;gap:7px">
+          <button class="btn btn-p btn-sm" onclick="approveUser(${u.id})">✓ Approve</button>
+          <button class="btn btn-o btn-sm" onclick="rejectUser(${u.id})" style="color:#B83025;border-color:#B83025">✗ Reject</button>
+        </div>`;
+      pc.appendChild(row);
+    });
+    el.appendChild(pc);
+  }
+
+  // User table
+  const uc=makeCard('');
+  uc.innerHTML=`<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px"><h2 style="font-size:14px;font-weight:600">User Management</h2><button class="btn btn-p btn-sm" onclick="openAddUser()">＋ Add User</button></div>`;
+  const wrap=document.createElement('div'); wrap.style.overflowX='auto';
+  wrap.innerHTML=`<table class="dt"><thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Dept</th><th>Status</th><th></th></tr></thead>
+  <tbody>${DB.users.map(u=>`<tr>
+    <td style="font-weight:600">${u.name}</td>
+    <td style="color:#78746A;font-size:10px">${u.email}</td>
+    <td>${tag(u.role,roleTagColor2(u.role))}</td>
+    <td style="color:#78746A">${u.dept||'—'}</td>
+    <td><span style="font-size:11px;font-weight:600;color:${u.status==='Active'?'#2A6348':'#78746A'}">${u.status}</span></td>
+    <td style="display:flex;gap:4px;flex-wrap:wrap">
+      <button class="btn-ghost" onclick="openEditUser(${u.id})">Edit</button>
+      ${u.id!==currentUser.id?`<button class="btn-ghost" style="color:${u.status==='Active'?'#B83025':'#2A6348'}" onclick="toggleUserStatus(${u.id})">${u.status==='Active'?'Disable':'Enable'}</button>`:''}
+      <button class="btn-ghost" style="color:#2563EB;font-size:10px" onclick="adminUnlockUser('${u.email}')" title="Clear login lockout">🔓 Unlock</button>
+    </td>
+  </tr>`).join('')}</tbody></table>`;
+  uc.appendChild(wrap); el.appendChild(uc);
+
+  // Settings
+  const sc=makeCard('<div class="card-hd">System Settings</div>');
+  [['notifs','Real-time notifications','Alerts for threshold breaches'],['autoNotify','Partner auto-notification','Auto-notify partners'],['backup','Automated daily backup','02:00 AM server backup'],['audit','Audit log tracking','Record all actions (compliance)']].forEach(([k,l,sub])=>{
+    const on=DB.settings[k];
+    const row=document.createElement('div'); row.style.cssText='display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid #DFD9D0';
+    row.innerHTML=`<div><div style="font-size:12px;font-weight:500">${l}</div><div style="font-size:10px;color:#78746A">${sub}</div></div>`;
+    const sw=document.createElement('button'); sw.className='sw'; sw.style.background=on?'#2A6348':'#DFD9D0';
+    sw.innerHTML=`<div class="sw-thumb" style="left:${on?19:2}px"></div>`;
+    sw.onclick=()=>{DB.settings[k]=!DB.settings[k];saveDB(DB);addAuditLog(`Setting "${k}" ${DB.settings[k]?'enabled':'disabled'}`);navigate('admin');toast('Setting updated');};
+    row.appendChild(sw); sc.appendChild(row);
+  });
+  el.appendChild(sc);
+
+  // Audit log
+  const al=makeCard('');
+  al.innerHTML=`<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px"><h2 style="font-size:14px;font-weight:600">🔍 Audit Log</h2><span class="tag tag-gray">${DB.auditLog?.length||0} events</span></div>`;
+  const log=(DB.auditLog||[]).slice(0,8);
+  if(!log.length) al.innerHTML+='<div style="font-size:11px;color:#78746A;padding:10px 0">No events recorded yet</div>';
+  log.forEach(e=>{
+    al.innerHTML+=`<div style="padding:7px 0;border-bottom:1px solid #DFD9D0;font-size:11px">
+      <div style="display:flex;justify-content:space-between"><span>${e.action}</span><span style="color:#78746A;font-family:monospace;font-size:9px">${new Date(e.ts).toLocaleString('en-GB',{hour:'2-digit',minute:'2-digit',day:'2-digit',month:'short'})}</span></div>
+      <div style="font-size:10px;color:#78746A">${e.user}</div></div>`;
+  });
+  el.appendChild(al);
+
+  // Sys health
+  const sys=makeCard(`<div class="card-hd">⚙️ System Health</div>
+    <div class="li"><div class="li-l"><div class="li-ic">🖥️</div><div><div class="li-title">Server Uptime</div><div class="li-sub">Active-Active cluster</div></div></div>${tag('99.9%','green')}</div>
+    <div class="li"><div class="li-l"><div class="li-ic">💾</div><div><div class="li-title">Last Backup</div><div class="li-sub">Automated 02:00 AM</div></div></div>${tag('Today','green')}</div>
+    <div class="li"><div class="li-l"><div class="li-ic">🔒</div><div><div class="li-title">Security</div><div class="li-sub">Hashed passwords · Session tokens · Lockout active</div></div></div>${tag('Secure','green')}</div>`);
+  el.appendChild(sys);
+
+  // Danger zone
+  const dz=makeCard(`<div class="card-hd" style="color:#B83025">⚠️ Danger Zone</div>
+    <div style="font-size:11px;color:#78746A;margin-bottom:10px">These actions are irreversible. Use with caution.</div>
+    <button class="btn btn-danger btn-full" onclick="if(confirm('Reset ALL data to factory defaults? This CANNOT be undone.'))resetAll()">🗑️ Reset All Data to Default</button>`);
+  el.appendChild(dz);
+}
+
+function approveUser(id) {
+  if (!DB.pendingUsers) return;
+  const pu = DB.pendingUsers.find(u => u.id === id);
+  if (!pu) return;
+  // Move from pending to active users
+  DB.users.push({
+    id: pu.id, name: pu.name, email: pu.email,
+    role: pu.role, dept: pu.dept || pu.org,
+    status: 'Active', salt: pu.salt, pwHash: pu.pwHash,
+    mustChangePw: false, createdAt: new Date().toISOString(),
+    org: pu.org
+  });
+  pu.status = 'Approved';
+  saveDB(DB);
+  addAuditLog(`Access approved: ${pu.name} (${pu.role}) by ${currentUser.name}`);
+  navigate('admin');
+  toast(`✅ ${pu.name} approved — they can now sign in`);
+}
+
+function rejectUser(id) {
+  if (!DB.pendingUsers) return;
+  const pu = DB.pendingUsers.find(u => u.id === id);
+  if (!pu) return;
+  if (!confirm(`Reject access request from ${pu.name} (${pu.email})?`)) return;
+  pu.status = 'Rejected';
+  saveDB(DB);
+  addAuditLog(`Access rejected: ${pu.name} by ${currentUser.name}`);
+  navigate('admin');
+  toast(`Request from ${pu.name} rejected`);
+}
+
+function resetAll(){
+  if (!confirm('Reset ALL data to factory defaults? This CANNOT be undone.\n\nAll users, entries, and pickups will be permanently deleted.')) return;
+  try { localStorage.removeItem(LOCAL_KEY); } catch {}
+  DB=null; currentUser=null; clearSession();
+  fetch(FB_URL, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({})
+  }).catch(() => {});
+  showScreen('setup');
+  toast('Data reset. Please set up the system again.');
+}
+function adminUnlockUser(email) {
+  clearLoginAttempts(email);
+  addAuditLog('Login lockout cleared for: ' + email);
+  toast('🔓 ' + email + ' unlocked — they can log in now');
+  navigate('admin');
+}
+
+function toggleUserStatus(id){
+  const u=DB.users.find(u=>u.id===id);
+  if(u){u.status=u.status==='Active'?'Inactive':'Active';saveDB(DB);addAuditLog(`User ${u.name} ${u.status}`);navigate('admin');toast(`User ${u.name} ${u.status}`);}
+}
+function openAddUser(){
+  document.getElementById('um-title').textContent='Add New User';
+  document.getElementById('um-id').value='';
+  document.getElementById('um-name').value='';
+  document.getElementById('um-email').value='';
+  document.getElementById('um-role').value='Staff';
+  document.getElementById('um-dept').value='';
+  document.getElementById('um-status').value='Active';
+  document.getElementById('um-pw').value='';
+  document.getElementById('um-pw-section').style.display='block';
+  document.getElementById('um-err').classList.remove('show');
+  openModal('overlay-user');
+}
+function openEditUser(id){
+  const u=DB.users.find(u=>u.id===id); if(!u)return;
+  document.getElementById('um-title').textContent='Edit User — '+u.name;
+  document.getElementById('um-id').value=u.id;
+  document.getElementById('um-name').value=u.name;
+  document.getElementById('um-email').value=u.email;
+  document.getElementById('um-role').value=u.role;
+  document.getElementById('um-dept').value=u.dept||'';
+  document.getElementById('um-status').value=u.status;
+  document.getElementById('um-pw').value='';
+  document.getElementById('um-pw-section').style.display='block';
+  document.getElementById('um-err').classList.remove('show');
+  openModal('overlay-user');
+}
+function saveUser(){
+  const err=document.getElementById('um-err');
+  const name=document.getElementById('um-name').value.trim();
+  const email=document.getElementById('um-email').value.trim();
+  const pw=document.getElementById('um-pw').value;
+  const id=document.getElementById('um-id').value;
+  if(!name){showErr(err,'Name is required');return;}
+  if(!email||!email.includes('@')){showErr(err,'Valid email is required');return;}
+  // Check email unique
+  const existing=DB.users.find(u=>u.email.toLowerCase()===email.toLowerCase()&&String(u.id)!==String(id));
+  if(existing){showErr(err,'This email is already used by another user');return;}
+  if(!id&&pw.length<8){showErr(err,'Password must be at least 8 characters');return;}
+  err.classList.remove('show');
+
+  if(id){
+    const u=DB.users.find(u=>u.id===Number(id));
+    if(u){
+      u.name=name;u.email=email;u.role=document.getElementById('um-role').value;
+      u.dept=document.getElementById('um-dept').value;u.status=document.getElementById('um-status').value;
+      if(pw.length>=8){const s=genSalt();u.salt=s;u.pwHash=hashPw(pw,s);u.mustChangePw=true;}
+      addAuditLog(`User updated: ${name}`);
+    }
+  } else {
+    const salt=genSalt();
+    DB.users.push({id:DB.nextId++,name,email,role:document.getElementById('um-role').value,dept:document.getElementById('um-dept').value,status:document.getElementById('um-status').value,salt,pwHash:hashPw(pw,salt),mustChangePw:true,createdAt:new Date().toISOString()});
+    addAuditLog(`User created: ${name} (${document.getElementById('um-role').value})`);
+  }
+  saveDB(DB);
+  closeModal('overlay-user');
+  navigate('admin');
+  toast(`✅ User ${name} saved. They can now log in with their email and password.`);
+}
+</script>
+
+<!-- ══ SELF-REGISTRATION OVERLAY ══ -->
+<div id="register-screen" class="auth-wrap" style="display:none">
+  <div class="auth-box" style="max-width:400px">
+    <div class="auth-logo" style="margin-bottom:4px">
+      <div class="auth-logo-icon"><svg viewBox="0 0 24 24" width="22" height="22" fill="white"><path d="M20 3H4v10c0 3.3 2.7 6 6 6h4c3.3 0 6-2.7 6-6V3zm-2 10c0 2.2-1.8 4-4 4h-4c-2.2 0-4-1.8-4-4V5h12v8z"/><path d="M12 19v2M8 21h8"/></svg></div>
+      <span style="font-size:21px;font-weight:700;letter-spacing:-.4px">RePlate</span>
+    </div>
+    <p style="text-align:center;font-size:12px;color:#78746A;margin-bottom:22px">Request access — fill in your details and a system admin will activate your account.</p>
+
+    <div id="reg-form">
+      <div class="fc-2">
+        <div class="fg"><label class="fl">Full Name <span style="color:#B83025">*</span></label>
+          <input class="fc" id="reg-name" placeholder="e.g. Sara Al-Qahtani" autocomplete="name"></div>
+        <div class="fg"><label class="fl">Work Email <span style="color:#B83025">*</span></label>
+          <input class="fc" id="reg-email" type="email" placeholder="you@hospital.sa" autocomplete="email"></div>
+      </div>
+      <div class="fc-2">
+        <div class="fg"><label class="fl">Organization <span style="color:#B83025">*</span></label>
+          <input class="fc" id="reg-org" placeholder="e.g. Dallah Hospital"></div>
+        <div class="fg"><label class="fl">Department</label>
+          <input class="fc" id="reg-dept" placeholder="e.g. Kitchen A"></div>
+      </div>
+      <div class="fg"><label class="fl">Role Request <span style="color:#B83025">*</span></label>
+        <select class="fc" id="reg-role">
+          <option value="">Select your role…</option>
+          <option value="Staff">Kitchen Staff — Log daily food waste</option>
+          <option value="Manager">Manager — Dashboard, reports & analytics</option>
+          <option value="Partner">Partner Organization — Handle pickup requests</option>
+        </select>
+      </div>
+      <div class="fg"><label class="fl">Password <span style="color:#B83025">*</span></label>
+        <div class="pw-wrap"><input class="fc" id="reg-pw" type="password" placeholder="Min. 8 characters" oninput="checkStrength(this.value,'reg')">
+          <span class="pw-eye" onclick="togglePw('reg-pw',this)">👁</span></div>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:3px;margin-top:5px">
+          <div class="strength-bar" id="reg-b1" style="background:#DFD9D0"></div>
+          <div class="strength-bar" id="reg-b2" style="background:#DFD9D0"></div>
+          <div class="strength-bar" id="reg-b3" style="background:#DFD9D0"></div>
+          <div class="strength-bar" id="reg-b4" style="background:#DFD9D0"></div>
+        </div>
+        <div style="font-size:10px;color:#78746A;margin-top:3px" id="reg-lbl">Enter a password</div>
+      </div>
+      <div class="fg"><label class="fl">Confirm Password <span style="color:#B83025">*</span></label>
+        <div class="pw-wrap"><input class="fc" id="reg-pw2" type="password" placeholder="Re-enter password">
+          <span class="pw-eye" onclick="togglePw('reg-pw2',this)">👁</span></div>
+      </div>
+      <div class="err-box" id="reg-err"></div>
+      <button class="btn btn-p btn-full" onclick="submitRegistration()">Request Access →</button>
+    </div>
+
+    <div id="reg-success" style="display:none;text-align:center;padding:20px 0">
+      <div style="width:56px;height:56px;background:#E4F2EB;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;font-size:26px">✅</div>
+      <h3 style="font-size:16px;font-weight:700;margin-bottom:8px">Request Submitted!</h3>
+      <p style="font-size:12px;color:#78746A;line-height:1.7;margin-bottom:16px">Your access request has been sent. The system admin will review and activate your account. You'll be able to sign in once approved.</p>
+      <div id="reg-summary" style="background:#F7F5F0;border-radius:9px;padding:12px 14px;text-align:left;margin-bottom:16px;font-size:11px"></div>
+    </div>
+
+    <div class="divider"></div>
+    <div style="text-align:center">
+      <span class="link-btn" onclick="showScreen('login')">← Back to Sign In</span>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══ NOTIFICATIONS PANEL ══ -->
+<div class="notif-panel" id="notif-panel">
+  <div class="np-hd">
+    <span>🔔 Notifications</span>
+    <span style="font-size:10px;color:#78746A;cursor:pointer" onclick="document.getElementById('notif-panel').classList.remove('show')">Close</span>
+  </div>
+  <div id="notif-list"></div>
+</div>
+
+</body>
+</html>
